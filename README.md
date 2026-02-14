@@ -7,14 +7,10 @@ A modern, full-featured **Point of Sale (POS) system** designed specifically for
   <img src="https://img.shields.io/badge/SQLite-Database-green?logo=sqlite" alt="SQLite"/>
   <img src="https://img.shields.io/badge/TailwindCSS-4.0-38B2AC?logo=tailwind-css" alt="TailwindCSS"/>
   <img src="https://img.shields.io/badge/License-Private-red" alt="License"/>
-</p>
-
-<p align="center">
   <img src="https://img.shields.io/badge/Offline-Ready-brightgreen" alt="Offline Ready"/>
   <img src="https://img.shields.io/badge/Multi--Tenant-Supported-blue" alt="Multi-Tenant"/>
   <img src="https://img.shields.io/badge/Thermal_Printing-80mm-orange" alt="Thermal Printing"/>
 </p>
-
 ---
 
 ## 📋 Table of Contents
