@@ -448,23 +448,20 @@ function getBreadcrumbs(pathname) {
 function AppLayoutEffectHandler() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { settings, refreshSettings } = useSettings();
+  const { settings, globalAppName, refreshSettings } = useSettings();
   const { currentShop } = useBranch();
 
   // Update browser tab name dynamically and sync settings
   React.useEffect(() => {
     if (pathname === "/login" || pathname === "/signup") return;
 
-    const pageTitle = getPageTitle(pathname, searchParams);
-    const businessName = settings.businessName || "Optics";
-    const shopName = currentShop ? ` | ${currentShop.name}` : "";
-    document.title = `${pageTitle}${shopName} | ${businessName}`;
+    document.title = globalAppName;
 
     // Ensure settings are synced when shop changes
     if (currentShop?.id) {
       refreshSettings();
     }
-  }, [pathname, settings.businessName, currentShop, refreshSettings, searchParams]);
+  }, [pathname, globalAppName, currentShop, refreshSettings, searchParams]);
 
   return null;
 }

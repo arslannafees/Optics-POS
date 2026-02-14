@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Toaster } from "@/components/ui/sonner";
 import { AccountExpiryBanner } from "@/components/AccountExpiryBanner";
+import { useSettings } from "@/contexts/SettingsContext";
 
 const navigation = [
     { name: "Dashboard", href: "/super-admin", icon: LayoutDashboard },
@@ -50,18 +51,11 @@ export default function SuperAdminLayout({ children }) {
         }
     }, [router]);
 
-    useEffect(() => {
-        const routeTitles = {
-            "/super-admin": "Dashboard",
-            "/super-admin/accounts": "Accounts",
-            "/super-admin/shops": "Shops",
-            "/super-admin/branches": "Branches",
-            "/super-admin/settings": "Settings",
-        };
+    const { globalAppName } = useSettings();
 
-        const currentTitle = routeTitles[pathname] || "Super Admin";
-        document.title = `${currentTitle} | Optics`;
-    }, [pathname]);
+    useEffect(() => {
+        document.title = globalAppName;
+    }, [pathname, globalAppName]);
 
     const handleLogout = () => {
         localStorage.removeItem("token");

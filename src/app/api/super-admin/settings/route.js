@@ -4,7 +4,7 @@ import getDb from "@/lib/db";
 export async function GET() {
     try {
         const db = getDb();
-        const settings = db.prepare("SELECT * FROM settings").all();
+        const settings = db.prepare("SELECT * FROM settings WHERE shop_id IS NULL").all();
 
         // Convert array to key-value object
         const settingsObj = settings.reduce((acc, curr) => {
@@ -24,7 +24,7 @@ export async function POST(req) {
         const db = getDb();
         const updates = await req.json();
 
-        const stmt = db.prepare("INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP)");
+        const stmt = db.prepare("INSERT OR REPLACE INTO settings (key, value, shop_id, updated_at) VALUES (?, ?, NULL, CURRENT_TIMESTAMP)");
 
         const transaction = db.transaction((data) => {
             for (const [key, value] of Object.entries(data)) {

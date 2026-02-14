@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/sheet";
 import { AccessoryFormFields } from "./AccessoryFormFields";
 
-export function AccessorySheet({ open, onOpenChange, isEditing, form, brands, onChange, onSelectChange, onSubmit }) {
+export function AccessorySheet({ open, onOpenChange, isEditing, form, onChange, onSelectChange, onSubmit }) {
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent className="sm:max-w-lg overflow-y-auto">
@@ -25,7 +25,6 @@ export function AccessorySheet({ open, onOpenChange, isEditing, form, brands, on
                 <form onSubmit={onSubmit}>
                     <AccessoryFormFields
                         form={form}
-                        brands={brands}
                         onChange={onChange}
                         onSelectChange={onSelectChange}
                     />

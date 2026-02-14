@@ -55,7 +55,7 @@ export default function AccessoriesPage() {
                     <DataTable columns={columns} data={accessories} searchPlaceholder="Search..." isLoading={isLoading} />
                 </CardContent>
             </Card>
-            <AccessorySheet open={state.sheetOpen} onOpenChange={state.setSheetOpen} isEditing={state.isEditing} form={state.form} brands={brands} onChange={(e) => state.setForm(p => ({ ...p, [e.target.name]: e.target.value }))} onSelectChange={(n, v) => state.setForm(p => ({ ...p, [n]: v }))} onSubmit={onSubmit} />
+            <AccessorySheet open={state.sheetOpen} onOpenChange={state.setSheetOpen} isEditing={state.isEditing} form={state.form} onChange={(e) => state.setForm(p => ({ ...p, [e.target.name]: e.target.value }))} onSelectChange={(n, v) => state.setForm(p => ({ ...p, [n]: v }))} onSubmit={onSubmit} />
             <AccessoryDeleteDialog open={state.deleteDialogOpen} onOpenChange={state.setDeleteDialogOpen} accessoryName={state.selectedAccessory?.name} onConfirm={onConfirmDelete} />
         </div>
     );

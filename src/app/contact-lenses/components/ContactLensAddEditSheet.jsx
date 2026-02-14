@@ -9,9 +9,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetDescription } from "@/components/ui/sheet";
+import { Search, Loader2 } from "lucide-react";
+import { useBranch } from "@/contexts/BranchContext";
+import { useBrandsData } from "@/hooks/useBrandsData";
+import { useMemo, useState } from "react";
 
 export function ContactLensAddEditSheet({ open, setOpen, isEditing, formData, setFormData, onSubmit, resetForm }) {
+    const { currentShop, currentBranch } = useBranch();
+    const { brands, loading: brandsLoading } = useBrandsData(currentShop, currentBranch, "Contact Lens");
+    const [searchBrand, setSearchBrand] = useState("");
     const update = (obj) => setFormData({ ...formData, ...obj });
+
+    const filteredBrands = useMemo(() => {
+        if (!searchBrand) return brands;
+        return brands.filter(b => b.brand?.toLowerCase().includes(searchBrand.toLowerCase()));
+    }, [searchBrand, brands]);
 
     return (
         <Sheet open={open} onOpenChange={o => { setOpen(o); if (!o) resetForm(); }}>
@@ -30,7 +42,36 @@ export function ContactLensAddEditSheet({ open, setOpen, isEditing, formData, se
 
                             <div className="space-y-1.5">
                                 <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Brand</Label>
-                                <Input className="h-9" placeholder="Brand name" value={formData.brand || ""} onChange={e => update({ brand: e.target.value })} />
+                                <Select value={formData.brand || ""} onValueChange={v => update({ brand: v })}>
+                                    <SelectTrigger className="h-9">
+                                        <SelectValue placeholder={brandsLoading ? "Loading..." : "Select brand"} />
+                                    </SelectTrigger>
+                                    <SelectContent align="start" position="popper" side="bottom" className="min-w-[300px] max-h-[350px] p-0 overflow-hidden flex flex-col">
+                                        <div className="p-2 border-b flex items-center gap-2 sticky top-0 bg-background z-10">
+                                            <Search className="h-4 w-4 text-muted-foreground shrink-0" />
+                                            <Input
+                                                placeholder="Search brand..."
+                                                value={searchBrand}
+                                                onChange={(e) => setSearchBrand(e.target.value)}
+                                                onKeyDown={(e) => e.stopPropagation()}
+                                                className="h-8 border-none focus-visible:ring-0 pl-4"
+                                            />
+                                        </div>
+                                        <div className="overflow-y-auto flex-1 max-h-[290px] pt-2">
+                                            {brandsLoading ? (
+                                                <div className="p-4 flex items-center justify-center">
+                                                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                                                </div>
+                                            ) : filteredBrands.length > 0 ? (
+                                                filteredBrands.map(b => (
+                                                    <SelectItem key={b.id} value={b.brand}>{b.brand}</SelectItem>
+                                                ))
+                                            ) : (
+                                                <div className="p-4 text-center text-sm text-muted-foreground">No brand found</div>
+                                            )}
+                                        </div>
+                                    </SelectContent>
+                                </Select>
                             </div>
 
                             <div className="space-y-1.5">
@@ -98,7 +139,7 @@ export function ContactLensAddEditSheet({ open, setOpen, isEditing, formData, se
 
                             <div className="space-y-1.5">
                                 <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Expiry Date</Label>
-                                <DatePicker value={formData.expiryDate} onChange={e => update({ expiryDate: e.target.value })} />
+                                <DatePicker value={formData.expiryDate} onChange={e => update({ expiryDate: e.target.value })} align="end" />
                             </div>
 
                             <div className="space-y-1.5">

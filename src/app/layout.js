@@ -6,6 +6,7 @@ import { SettingsProvider } from "@/contexts/SettingsContext";
 
 
 import { BranchProvider } from "@/contexts/BranchContext";
+import getDb from "@/lib/db";
 
 
 const dmSans = DM_Sans({
@@ -24,13 +25,33 @@ const poppins = Poppins({
   preload: false, // Non-critical font
 });
 
-export const metadata = {
-  title: {
-    template: "%s | Optics",
-    default: "Optics",
-  },
-  description: "Professional Optical Shop Management System",
-};
+export async function generateMetadata() {
+  try {
+    const db = getDb();
+    const setting = db.prepare("SELECT value FROM settings WHERE key = ? AND shop_id IS NULL").get("businessName");
+    const appName = setting?.value || "Optics";
+
+    return {
+      title: appName,
+      description: "Professional Optical Shop Management System",
+      icons: {
+        icon: "/Images/Logo.png",
+        shortcut: "/Images/Logo.png",
+        apple: "/Images/Logo.png",
+      },
+    };
+  } catch (error) {
+    return {
+      title: "Optics",
+      description: "Professional Optical Shop Management System",
+      icons: {
+        icon: "/Images/Logo.png",
+        shortcut: "/Images/Logo.png",
+        apple: "/Images/Logo.png",
+      },
+    };
+  }
+}
 
 export default function RootLayout({ children }) {
   return (

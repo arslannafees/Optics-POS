@@ -7,7 +7,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:check": "node scripts/check-db.js",
+    "db:migrate": "node scripts/migrate-db.js"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.11",

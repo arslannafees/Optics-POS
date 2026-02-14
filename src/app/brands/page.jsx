@@ -12,6 +12,7 @@ import {
   Glasses,
   Eye,
   Sparkles,
+  LayoutGrid,
 } from "lucide-react";
 import ContactLensIcon from "@/components/ContactLensIcon";
 
@@ -63,7 +64,7 @@ import { useBranch } from "@/contexts/BranchContext"; // Added import
 
 const initialFormState = {
   brand: "",
-  type: "Spectacle Lens",
+  type: "All Categories",
   remarks: "",
   active: true,
 };
@@ -165,7 +166,7 @@ export default function BrandsPage() {
     setSelectedBrand(brand);
     setForm({
       brand: brand.brand || "",
-      type: brand.type || "Spectacle Lens",
+      type: brand.type || "All Categories",
       remarks: brand.remarks || "",
       active: brand.active ?? true,
     });
@@ -242,9 +243,10 @@ export default function BrandsPage() {
     setSheetOpen(true);
   };
 
-  const frameBrands = brands.filter((b) => b.type === "Frame").length;
-  const spectacleLensBrands = brands.filter((b) => b.type === "Spectacle Lens" || b.type === "Lens").length;
-  const contactLensBrands = brands.filter((b) => b.type === "Contact Lens").length;
+  const spectacleLensBrands = brands.filter((b) => b.type === "Spectacle Lens" || b.type === "Lens" || b.type === "All Categories").length;
+  const contactLensBrands = brands.filter((b) => b.type === "Contact Lens" || b.type === "All Categories").length;
+  const frameBrands = brands.filter((b) => b.type === "Frame" || b.type === "All Categories").length;
+  const accessoryBrands = brands.filter((b) => b.type === "Accessory" || b.type === "All Categories").length;
   const activeBrands = brands.filter((b) => b.active).length;
 
   const columns = [
@@ -273,6 +275,8 @@ export default function BrandsPage() {
               <ContactLensIcon className="mr-1 h-3.5 w-3.5" />
             ) : type === "Spectacle Lens" || type === "Lens" ? (
               <Eye className="mr-1 h-3 w-3" />
+            ) : type === "All Categories" ? (
+              <LayoutGrid className="mr-1 h-3 w-3" />
             ) : (
               <Sparkles className="mr-1 h-3 w-3" />
             )}
@@ -356,7 +360,7 @@ export default function BrandsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         <Card className="border shadow-none">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -402,6 +406,17 @@ export default function BrandsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-semibold">{contactLensBrands}</div>
+          </CardContent>
+        </Card>
+        <Card className="border shadow-none">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Accessory Brands
+            </CardTitle>
+            <Sparkles className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-semibold">{accessoryBrands}</div>
           </CardContent>
         </Card>
       </div>
@@ -462,7 +477,13 @@ export default function BrandsPage() {
                 <SelectTrigger>
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent position="popper" side="bottom">
+                  <SelectItem value="All Categories">
+                    <div className="flex items-center gap-2">
+                      <LayoutGrid className="h-4 w-4" />
+                      All Categories
+                    </div>
+                  </SelectItem>
                   <SelectItem value="Frame">
                     <div className="flex items-center gap-2">
                       <Glasses className="h-4 w-4" />

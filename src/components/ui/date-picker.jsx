@@ -13,7 +13,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 
-const DatePicker = React.forwardRef(({ className, value, onChange, placeholder, ...props }, ref) => {
+const DatePicker = React.forwardRef(({ className, value, onChange, placeholder, align = "start", side = "bottom", ...props }, ref) => {
     const [open, setOpen] = React.useState(false);
     const date = value ? new Date(value) : null;
 
@@ -40,7 +40,7 @@ const DatePicker = React.forwardRef(({ className, value, onChange, placeholder, 
                     {date ? format(date, "PPP") : <span>{placeholder || "Pick a date"}</span>}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start" side="bottom" avoidCollisions={false}>
+            <PopoverContent className="w-auto p-0" align={align} side={side}>
                 <Calendar
                     mode="single"
                     selected={date}

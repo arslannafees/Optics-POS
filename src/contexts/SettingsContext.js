@@ -26,6 +26,11 @@ export function SettingsProvider({ children }) {
         }
     );
 
+    const { data: globalRawSettings } = useSWR('/api/super-admin/settings', fetcher, {
+        revalidateOnFocus: false,
+        dedupingInterval: 60000,
+    });
+
     const settings = React.useMemo(() => {
         const defaults = {
             businessName: currentShop?.name || "Optics",
@@ -35,8 +40,12 @@ export function SettingsProvider({ children }) {
         return { ...defaults, ...rawSettings };
     }, [rawSettings, currentShop]);
 
+    const globalAppName = React.useMemo(() => {
+        return globalRawSettings?.businessName || "Optics";
+    }, [globalRawSettings]);
+
     return (
-        <SettingsContext.Provider value={{ settings, loading: isLoading, refreshSettings: mutate }}>
+        <SettingsContext.Provider value={{ settings, globalAppName, loading: isLoading, refreshSettings: mutate }}>
             {children}
         </SettingsContext.Provider>
     );
