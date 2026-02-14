@@ -13,6 +13,7 @@ A modern, full-featured **Point of Sale (POS) system** designed specifically for
   <img src="https://img.shields.io/badge/Multi--Tenant-Supported-blue" alt="Multi-Tenant"/>
   <img src="https://img.shields.io/badge/Thermal_Printing-80mm-orange" alt="Thermal Printing"/>
 </p>
+
 ---
 
 ## 📋 Table of Contents
