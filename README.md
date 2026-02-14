@@ -642,7 +642,7 @@ This is a private project. For any inquiries, please contact the project maintai
    👤 Name: Arslan Nafees<br> 
    📱 Phone: +92 334 111 3047<br>
    📧 Email: arslannafees807@gmail.com<br>
-  <img src="https://cdn.simpleicons.org/github/white" width="16" height="16"> GitHub: <a href="https://github.com/arslannafees">@arslannafees</a>
+   <img src="https://cdn.simpleicons.org/github/white" width="16" height="16"> GitHub: <a href="https://github.com/arslannafees">@arslannafees</a>
 ---
 
 ## 📄 License
