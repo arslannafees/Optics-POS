@@ -640,9 +640,9 @@ This is a private project. For any inquiries, please contact the project maintai
 ## 📞 Contact
 
 **Arslan Nafees**  
-📱 Phone: +92 334 111 3047  
-📧 Email: arslannafees807@gmail.com  
-🐙 GitHub: [@arslannafees](https://github.com/arslannafees)
+📱 Phone: +92 334 111 3047<br>
+📧 Email: arslannafees807@gmail.com<br>
+<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="16" height="16"> GitHub: <a href="https://github.com/arslannafees">@arslannafees</a>
 
 ---
 
