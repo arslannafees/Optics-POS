@@ -43,7 +43,7 @@ export function useContactLensForm(refresh, shopId, branchId) {
         } catch (s) { toast.error("Failed"); }
     };
 
-    const onDelete = async () => {
+    const handleDelete = async () => {
         try {
             const user = JSON.parse(localStorage.getItem("user") || "{}");
             const res = await fetch(`/api/contact-lenses/${selectedLens.id}`, {
@@ -54,5 +54,5 @@ export function useContactLensForm(refresh, shopId, branchId) {
         } catch (e) { toast.error("Failed"); }
     };
 
-    return { sheetOpen, setSheetOpen, deleteDialogOpen, setDeleteDialogOpen, selectedLens, setSelectedLens, formData, setFormData, isEditing, setIsEditing, onSubmit, onDelete, resetForm };
+    return { sheetOpen, setSheetOpen, deleteDialogOpen, setDeleteDialogOpen, selectedLens, setSelectedLens, formData, setFormData, isEditing, setIsEditing, onSubmit, handleDelete, resetForm };
 }
