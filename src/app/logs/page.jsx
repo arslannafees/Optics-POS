@@ -78,6 +78,66 @@ function ActionBadge({ action }) {
     return <Badge variant="outline">{action}</Badge>;
 }
 
+function formatFieldValue(value) {
+    if (value === null || value === undefined) return "—";
+
+    // Array of items (e.g. order/purchase items)
+    if (Array.isArray(value)) {
+        if (value.length === 0) return "None";
+        return (
+            <div className="space-y-1.5">
+                {value.map((item, i) => {
+                    if (typeof item === "object" && item !== null) {
+                        const type = item.type ?? item.itemType ?? "";
+                        const name = item.name || item.itemName || "";
+                        const qty = item.quantity ?? item.qty ?? "";
+                        const price = item.price ?? "";
+                        const total = item.total ?? "";
+
+                        const label = name
+                            ? `${name}${type ? ` (${type})` : ""}`
+                            : type
+                            ? type.charAt(0).toUpperCase() + type.slice(1)
+                            : `Item ${i + 1}`;
+
+                        const details = [
+                            qty !== "" ? `Qty: ${qty}` : null,
+                            price !== "" ? `Price: ${price}` : null,
+                            total !== "" ? `Total: ${total}` : null,
+                        ]
+                            .filter(Boolean)
+                            .join("  ·  ");
+
+                        return (
+                            <div key={i} className="flex items-start gap-2 bg-white/60 rounded px-2 py-1.5 border border-slate-100">
+                                <span className="font-medium text-slate-700 truncate">{label}</span>
+                                {details && <span className="text-slate-500 text-xs mt-0.5 shrink-0">{details}</span>}
+                            </div>
+                        );
+                    }
+                    return <div key={i}>{String(item)}</div>;
+                })}
+            </div>
+        );
+    }
+
+    // Plain object — render as key: value pairs
+    if (typeof value === "object") {
+        return (
+            <div className="space-y-0.5">
+                {Object.entries(value).map(([k, v]) => (
+                    <div key={k} className="flex gap-1 text-xs">
+                        <span className="text-slate-500 capitalize shrink-0">{k.replace(/_/g, " ")}:</span>
+                        <span className="text-slate-800">{String(v ?? "—")}</span>
+                    </div>
+                ))}
+            </div>
+        );
+    }
+
+    return String(value);
+}
+
 function ChangesViewer({ log }) {
     const { changes, action } = log;
 
@@ -110,20 +170,16 @@ function ChangesViewer({ log }) {
                                 <span className="text-[10px] font-bold text-red-600/70 uppercase tracking-wider">
                                     {key.replace(/_/g, " ")} (Old)
                                 </span>
-                                <div className="text-sm break-all font-mono bg-red-50/50 p-2.5 rounded border border-red-100/50 text-red-900">
-                                    {typeof old[key] === "object" && old[key] !== null
-                                        ? JSON.stringify(old[key])
-                                        : String(old[key] ?? "—")}
+                                <div className="text-sm bg-red-50/50 p-2.5 rounded border border-red-100/50 text-red-900">
+                                    {formatFieldValue(old[key])}
                                 </div>
                             </div>
                             <div className="space-y-1">
                                 <span className="text-[10px] font-bold text-emerald-600/70 uppercase tracking-wider">
-                                    (New)
+                                    {key.replace(/_/g, " ")} (New)
                                 </span>
-                                <div className="text-sm break-all font-mono bg-emerald-50/50 p-2.5 rounded border border-emerald-100/50 text-emerald-900">
-                                    {typeof newVal[key] === "object" && newVal[key] !== null
-                                        ? JSON.stringify(newVal[key])
-                                        : String(newVal[key] ?? "—")}
+                                <div className="text-sm bg-emerald-50/50 p-2.5 rounded border border-emerald-100/50 text-emerald-900">
+                                    {formatFieldValue(newVal[key])}
                                 </div>
                             </div>
                         </div>
@@ -140,10 +196,8 @@ function ChangesViewer({ log }) {
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                         {key.replace(/_/g, " ")}
                     </span>
-                    <div className="text-sm break-all font-mono bg-muted/40 p-2.5 rounded border border-slate-100">
-                        {typeof value === "object" && value !== null
-                            ? JSON.stringify(value, null, 2)
-                            : String(value ?? "—")}
+                    <div className="text-sm bg-muted/40 p-2.5 rounded border border-slate-100">
+                        {formatFieldValue(value)}
                     </div>
                 </div>
             ))}
