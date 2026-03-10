@@ -1,5 +1,28 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    async headers() {
+        return [
+            {
+                source: '/(.*)',
+                headers: [
+                    {
+                        key: 'Content-Security-Policy',
+                        // 'unsafe-eval' is required by recharts and other charting libs that use new Function()
+                        value: [
+                            "default-src 'self'",
+                            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+                            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+                            "font-src 'self' https://fonts.gstatic.com data:",
+                            "img-src 'self' data: blob:",
+                            "connect-src 'self'",
+                            "worker-src 'self' blob:",
+                        ].join('; '),
+                    },
+                ],
+            },
+        ];
+    },
+
     // Prevent Next.js from bundling native server-only modules
     serverExternalPackages: ['better-sqlite3'],
 
