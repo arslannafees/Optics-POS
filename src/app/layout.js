@@ -35,6 +35,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Allow unsafe-eval for recharts/charting libs that use new Function() */}
+        <meta
+          httpEquiv="Content-Security-Policy"
+          content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self'; worker-src 'self' blob:;"
+        />
+      </head>
       <body
         className={`${dmSans.variable} ${poppins.variable} font-sans antialiased min-h-screen bg-background`}
         suppressHydrationWarning
