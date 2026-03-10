@@ -1,5 +1,6 @@
 import Database from 'better-sqlite3';
 import path from 'path';
+import fs from 'fs';
 
 /**
  * @file connection.js
@@ -7,6 +8,9 @@ import path from 'path';
  */
 
 const dbPath = path.join(process.cwd(), 'data', 'optics.db');
+
+// Ensure the data directory exists (required on fresh deployments e.g. Render)
+fs.mkdirSync(path.dirname(dbPath), { recursive: true });
 
 let db;
 
