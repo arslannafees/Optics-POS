@@ -13,10 +13,10 @@ export function ReceivableReportSearch({ query, setQuery, customers, selectedId,
 
     return (
         <div className="bg-background mb-8">
-            <div className="flex items-end gap-6 max-w-2xl">
-                <div className="flex-1 space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Search Customer <span className="text-red-500">*</span></label>
-                    <div className="relative">
+            <div className="flex flex-col gap-2 max-w-2xl">
+                <label className="text-sm font-medium text-gray-700">Search Customer <span className="text-red-500">*</span></label>
+                <div className="flex items-center gap-4">
+                    <div className="relative flex-1">
                         <Popover open={open} onOpenChange={setOpen}>
                             <PopoverTrigger asChild>
                                 <div className="relative cursor-pointer">
@@ -54,10 +54,10 @@ export function ReceivableReportSearch({ query, setQuery, customers, selectedId,
                             </PopoverContent>
                         </Popover>
                     </div>
+                    <Button onClick={onSearch} className="h-10 px-10 bg-black hover:bg-black/90 text-white font-medium rounded-md">
+                        Search
+                    </Button>
                 </div>
-                <Button onClick={onSearch} className="h-10 px-10 bg-black hover:bg-black/90 text-white font-medium rounded-md">
-                    Search
-                </Button>
             </div>
         </div>
     );
