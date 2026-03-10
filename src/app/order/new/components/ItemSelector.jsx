@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 
-export function ItemSelector({ item, lists, onChange }) {
+export const ItemSelector = React.memo(function ItemSelector({ item, lists, onChange }) {
     const [selectedModel, setSelectedModel] = useState("");
 
     if (item.type === "eye-checkup") return <Input value="Professional Eye Checkup" readOnly className="bg-muted/50" />;
@@ -136,4 +136,4 @@ export function ItemSelector({ item, lists, onChange }) {
             </SelectContent>
         </Select>
     );
-}
+});

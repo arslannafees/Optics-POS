@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,14 +9,33 @@ import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@
 
 export function CustomerPicker({ state, customers }) {
     const { formData, setFormData, customerOpen, setCustomerOpen, customerSearch, setCustomerSearch } = state;
+
+    // Local search state for instant rendering
+    const [localSearch, setLocalSearch] = useState(customerSearch || "");
+
+    // Sync from parent (e.g. when a customer is selected and name is set)
+    useEffect(() => {
+        setLocalSearch(customerSearch || "");
+    }, [customerSearch]);
+
+    // Debounced sync to parent for filtering
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (localSearch !== (customerSearch || "")) {
+                setCustomerSearch(localSearch);
+            }
+        }, 150);
+        return () => clearTimeout(timer);
+    }, [localSearch]);
+
     return (
         <div className="space-y-2">
             <Label>Select Customer *</Label>
             <Popover open={customerOpen} onOpenChange={setCustomerOpen}>
                 <PopoverAnchor asChild>
                     <div className="relative">
-                        <Input placeholder="Search customer..." value={customerSearch} autoComplete="off"
-                            onChange={(e) => { setCustomerSearch(e.target.value); if (!customerOpen) setCustomerOpen(true); }}
+                        <Input placeholder="Search customer..." value={localSearch} autoComplete="off"
+                            onChange={(e) => { setLocalSearch(e.target.value); if (!customerOpen) setCustomerOpen(true); }}
                             onFocus={() => { if (!customerOpen) setCustomerOpen(true); }}
                             className="w-full pr-10" />
                         <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 opacity-50" />
@@ -27,10 +46,10 @@ export function CustomerPicker({ state, customers }) {
                         <CommandList className="w-full">
                             <CommandEmpty className="text-sm text-center py-4">No customer found.</CommandEmpty>
                             <CommandGroup className="w-full">
-                                {customers.filter(c => !customerSearch || c.searchValue.includes(customerSearch.toLowerCase())).map((c) => (
+                                {customers.filter(c => !localSearch || c.searchValue.includes(localSearch.toLowerCase())).map((c) => (
                                     <CommandItem key={c.id} value={c.searchValue} onSelect={() => {
                                         setFormData(prev => ({ ...prev, customerId: c.id.toString(), customerName: c.name }));
-                                        setCustomerSearch(c.name); setCustomerOpen(false);
+                                        setLocalSearch(c.name); setCustomerSearch(c.name); setCustomerOpen(false);
                                     }} className="w-full">
                                         <div className="flex flex-col w-full">
                                             <span className="font-medium text-sm">{c.name}</span>

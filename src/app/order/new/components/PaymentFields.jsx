@@ -9,18 +9,28 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 
-export function PaymentFields({ formData, setFormData, settings, saving, editId }) {
-    const balance = formData.total - (parseFloat(formData.paid) || 0);
+export const PaymentFields = React.memo(function PaymentFields({ formData, setFormData, settings, saving, editId }) {
     const upd = (f, v) => setFormData(p => ({ ...p, [f]: v }));
 
-    const [localRemarks, setLocalRemarks] = React.useState(formData.remarks || "");
+    // Local state for Paid input
+    const [localPaid, setLocalPaid] = React.useState(formData.paid || "");
+    React.useEffect(() => {
+        setLocalPaid(formData.paid || "");
+    }, [formData.paid]);
+    React.useEffect(() => {
+        const timer = setTimeout(() => {
+            if (localPaid !== (formData.paid || "")) {
+                upd('paid', localPaid);
+            }
+        }, 150);
+        return () => clearTimeout(timer);
+    }, [localPaid]);
 
-    // Sync from parent
+    // Local state for Remarks
+    const [localRemarks, setLocalRemarks] = React.useState(formData.remarks || "");
     React.useEffect(() => {
         setLocalRemarks(formData.remarks || "");
     }, [formData.remarks]);
-
-    // Debounced update to parent
     React.useEffect(() => {
         const timer = setTimeout(() => {
             if (localRemarks !== formData.remarks) {
@@ -30,9 +40,11 @@ export function PaymentFields({ formData, setFormData, settings, saving, editId 
         return () => clearTimeout(timer);
     }, [localRemarks]);
 
+    const balance = formData.total - (parseFloat(localPaid) || 0);
+
     return (
         <div className="space-y-4">
-            <div className="space-y-2"><Label>Paid ({settings?.currency})</Label><Input type="number" value={formData.paid || ""} onChange={e => upd('paid', e.target.value)} /></div>
+            <div className="space-y-2"><Label>Paid ({settings?.currency})</Label><Input type="number" value={localPaid} onChange={e => setLocalPaid(e.target.value)} /></div>
             <div className="space-y-2">
                 <Label>Method</Label>
                 <Select value={formData.paymentMethod} onValueChange={v => upd('paymentMethod', v)}>
@@ -50,4 +62,4 @@ export function PaymentFields({ formData, setFormData, settings, saving, editId 
             </Button>
         </div>
     );
-}
+});

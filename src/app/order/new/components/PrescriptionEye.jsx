@@ -1,15 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useCallback } from "react";
 import { Label } from "@/components/ui/label";
 import { PrescriptionField } from "./PrescriptionField";
-import { BaseSelector } from "./BaseSelector"; // To be created
+import { BaseSelector } from "./BaseSelector";
 import * as opt from "../constants/prescriptionOptions";
 
-export function PrescriptionEye({ side, data, settings, onChange, pdInput }) {
+export const PrescriptionEye = React.memo(function PrescriptionEye({ side, data, settings, onChange, pdInput }) {
     const s = side.toLowerCase();
     const inputType = settings?.prescriptionInputType;
-    const upd = (f, v) => onChange(`${s}${f}`, v);
+    const upd = useCallback((f, v) => onChange(`${s}${f}`, v), [onChange, s]);
 
     return (
         <div className="space-y-4">
@@ -27,4 +27,4 @@ export function PrescriptionEye({ side, data, settings, onChange, pdInput }) {
             </div>
         </div>
     );
-}
+});

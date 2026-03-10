@@ -1,7 +1,9 @@
 "use client";
 
+import { useCallback } from "react";
+
 export function useOrderMutations(setFormData, lists) {
-    const handleAddItem = (type, fee = "0") => {
+    const handleAddItem = useCallback((type, fee = "0") => {
         setFormData(prev => ({
             ...prev,
             items: [...prev.items, {
@@ -10,13 +12,13 @@ export function useOrderMutations(setFormData, lists) {
                 price: type === "eye-checkup" ? fee : "", quantity: "1",
             }]
         }));
-    };
+    }, [setFormData]);
 
-    const handleRemoveItem = (id) => {
+    const handleRemoveItem = useCallback((id) => {
         setFormData(prev => ({ ...prev, items: prev.items.filter(i => i.id !== id) }));
-    };
+    }, [setFormData]);
 
-    const handleItemChange = (itemId, field, value) => {
+    const handleItemChange = useCallback((itemId, field, value) => {
         setFormData(prev => ({
             ...prev,
             items: prev.items.map(item => {
@@ -29,7 +31,7 @@ export function useOrderMutations(setFormData, lists) {
                 return { ...item, [field]: value };
             })
         }));
-    };
+    }, [setFormData, lists]);
 
     return { handleAddItem, handleRemoveItem, handleItemChange };
 }

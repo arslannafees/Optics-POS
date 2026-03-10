@@ -1,6 +1,7 @@
 # 👓 Optics POS
 
 A modern, full-featured **Point of Sale (POS) system** designed specifically for optical retail shops. Built with Next.js 15 and React 19, this application streamlines inventory management, sales tracking, customer management, and comprehensive reporting for eyewear businesses.
+
 <p align="center">
   <img src="https://img.shields.io/badge/Next.js-15.5-black?logo=next.js" alt="Next.js"/>
   <img src="https://img.shields.io/badge/React-19.1-blue?logo=react" alt="React"/>
@@ -270,8 +271,7 @@ optics-pos/
 │   │   │   └── super-admin/         # Super admin dashboard (shops, branches, accounts, settings)
 │   │   │
 │   │   ├── globals.css              # Global styles & Tailwind imports
-│   │   ├── layout.js                # Root layout with providers
-│   │   └── favicon.ico              # App icon
+│   │   └── layout.js                # Root layout with providers
 │   │
 │   ├── 📂 components/               # Reusable React components
 │   │   ├── app-layout.jsx           # Main app shell with sidebar & navigation

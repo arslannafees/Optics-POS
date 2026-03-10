@@ -1,12 +1,31 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export function PrescriptionField({ label, value, options, disabled, placeholder = "0.00", inputType, onChange }) {
+export const PrescriptionField = React.memo(function PrescriptionField({ label, value, options, disabled, placeholder = "0.00", inputType, onChange }) {
     const isDropdown = inputType === "dropdown";
+
+    // Local state for text input mode
+    const [localValue, setLocalValue] = useState(value ?? "");
+
+    // Sync from parent (e.g. on Load Latest RX)
+    useEffect(() => {
+        setLocalValue(value ?? "");
+    }, [value]);
+
+    // Debounced sync to parent
+    useEffect(() => {
+        if (isDropdown) return;
+        const timer = setTimeout(() => {
+            if (localValue !== (value ?? "")) {
+                onChange(localValue);
+            }
+        }, 150);
+        return () => clearTimeout(timer);
+    }, [localValue]);
 
     return (
         <div className="space-y-1">
@@ -20,8 +39,8 @@ export function PrescriptionField({ label, value, options, disabled, placeholder
                     </SelectContent>
                 </Select>
             ) : (
-                <Input disabled={disabled} placeholder={placeholder} value={value ?? ""} onChange={(e) => onChange(e.target.value)} />
+                <Input disabled={disabled} placeholder={placeholder} value={localValue} onChange={(e) => setLocalValue(e.target.value)} />
             )}
         </div>
     );
-}
+});

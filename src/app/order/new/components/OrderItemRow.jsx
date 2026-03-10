@@ -7,7 +7,7 @@ import { ItemTypeLabel } from "./ItemTypeLabel";
 import { ItemSelector } from "./ItemSelector";
 import { ItemPriceInputs } from "./ItemPriceInputs";
 
-export function OrderItemRow({ item, lists, settings, onRemove, onChange }) {
+export const OrderItemRow = React.memo(function OrderItemRow({ item, lists, settings, onRemove, onChange }) {
     const isEyeCheckup = item.type === "eye-checkup";
 
     return (
@@ -24,4 +24,4 @@ export function OrderItemRow({ item, lists, settings, onRemove, onChange }) {
             </Button>
         </div>
     );
-}
+});

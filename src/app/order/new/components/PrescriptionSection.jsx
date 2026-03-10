@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback } from "react";
 import { History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -11,25 +11,36 @@ import { PrescriptionEye } from "./PrescriptionEye";
 import { PdTypeToggle } from "./PdTypeToggle";
 import { PdInput } from "./PdInput";
 
-export function PrescriptionSection({ formData, setFormData, settings, onLoadLatest }) {
-    const px = formData.prescription;
-    const [localRemarks, setLocalRemarks] = React.useState(px.remarks ?? '');
-    const onChange = (f, v) => setFormData(prev => ({ ...prev, prescription: { ...prev.prescription, [f]: v } }));
+// Isolated Notes component — only re-renders when `remarks` string actually changes
+const PrescriptionNotes = React.memo(function PrescriptionNotes({ remarks, setFormData }) {
+    const [local, setLocal] = React.useState(remarks ?? '');
 
-    // Sync from parent (e.g. on load latest)
+    // Sync from parent (e.g. on Load Latest RX)
     React.useEffect(() => {
-        setLocalRemarks(px.remarks ?? '');
-    }, [px.remarks]);
+        setLocal(remarks ?? '');
+    }, [remarks]);
 
-    // Debounced update to parent
+    // Debounced sync to parent
     React.useEffect(() => {
         const timer = setTimeout(() => {
-            if (localRemarks !== px.remarks) {
-                onChange('remarks', localRemarks);
+            if (local !== (remarks ?? '')) {
+                setFormData(prev => ({ ...prev, prescription: { ...prev.prescription, remarks: local } }));
             }
-        }, 500);
+        }, 300);
         return () => clearTimeout(timer);
-    }, [localRemarks]);
+    }, [local]);
+
+    return (
+        <div className="space-y-2">
+            <Label>Notes</Label>
+            <Textarea value={local} onChange={e => setLocal(e.target.value)} />
+        </div>
+    );
+});
+
+export const PrescriptionSection = React.memo(function PrescriptionSection({ formData, setFormData, settings, onLoadLatest }) {
+    const px = formData.prescription;
+    const onChange = useCallback((f, v) => setFormData(prev => ({ ...prev, prescription: { ...prev.prescription, [f]: v } })), [setFormData]);
 
     return (
         <Card className="border shadow-none">
@@ -59,8 +70,8 @@ export function PrescriptionSection({ formData, setFormData, settings, onLoadLat
                     onChange={onChange}
                     pdInput={<PdInput side="Left" data={px} inputType={settings?.prescriptionInputType} onChange={onChange} />}
                 />
-                <div className="space-y-2"><Label>Notes</Label><Textarea value={localRemarks} onChange={e => setLocalRemarks(e.target.value)} /></div>
+                <PrescriptionNotes remarks={px.remarks} setFormData={setFormData} />
             </CardContent>
         </Card>
     );
-}
+});

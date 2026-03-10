@@ -7,7 +7,7 @@ import NoData from "@/components/NoData";
 import { OrderButtonTray } from "./OrderButtonTray";
 import { OrderItemRow } from "./OrderItemRow";
 
-export function OrderItems({ state, lists, settings, actions, dragActions }) {
+export const OrderItems = React.memo(function OrderItems({ state, lists, settings, actions, dragActions }) {
     const { formData } = state;
     const { handleAddItem, handleRemoveItem, handleItemChange } = actions;
 
@@ -39,4 +39,4 @@ export function OrderItems({ state, lists, settings, actions, dragActions }) {
             </CardContent>
         </Card>
     );
-}
+});

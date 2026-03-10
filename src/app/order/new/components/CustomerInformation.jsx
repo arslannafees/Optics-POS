@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CustomerPicker } from "./CustomerPicker";
 import { OrderMetadataFields } from "./OrderMetadataFields";
 
-export function CustomerInformation({ state, lists, settings, isEyeCheckupOnly }) {
+export const CustomerInformation = React.memo(function CustomerInformation({ state, lists, settings, isEyeCheckupOnly }) {
     const selected = lists.customers.find(c => c.id.toString() === state.formData.customerId);
 
     return (
@@ -21,7 +21,7 @@ export function CustomerInformation({ state, lists, settings, isEyeCheckupOnly }
             </CardContent>
         </Card>
     );
-}
+});
 
 function SelectedCustomerBadge({ customer }) {
     return (
