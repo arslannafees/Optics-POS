@@ -152,7 +152,7 @@ A modern, full-featured **Point of Sale (POS) system** designed specifically for
 |------|--------------|
 | **Super Admin** | Full platform access, manage all shops and users |
 | **Admin** | Shop-level access, restricted to assigned shop/branch |
-| **Staff** | Same app as Admin but without Reports, Analytics, Settings, and Logs |
+| **Staff** | Same app as Admin but without Reports, Analytics, Settings,Shifting between Branches and Logs |
 | **Lens Fabricator** | Restricted portal access — view and update fabrication jobs only |
 
 ### 📋 Activity Logging
