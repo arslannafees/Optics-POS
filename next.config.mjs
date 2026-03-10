@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    // Prevent Next.js from bundling native server-only modules
+    serverExternalPackages: ['better-sqlite3'],
+
     // Enable compression
     compress: true,
 
