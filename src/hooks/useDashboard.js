@@ -20,10 +20,12 @@ export function useDashboard(settings) {
         if (!currentShop) return;
         setIsLoading(true);
         try {
-            const lastCheck = localStorage.getItem('lastLogCheck');
+            const stored = localStorage.getItem('lastLogCheck');
+            // Default to 24 hours ago if never set (e.g. fresh install/deploy)
+            const lastCheck = stored || String(Date.now() - 24 * 60 * 60 * 1000);
             const q = new URLSearchParams({ shopId: currentShop.id });
             if (currentBranch) q.append('branchId', currentBranch.id);
-            if (lastCheck) q.append('lastLogCheck', lastCheck);
+            q.append('lastLogCheck', lastCheck);
 
             const [dashRes, fabRes] = await Promise.all([
                 fetch(`/api/dashboard?${q.toString()}`),
