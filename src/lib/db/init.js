@@ -61,8 +61,9 @@ export function initialize() {
             }
         }
 
+        // initCore must run before seedData so the shops table exists when seeded
+        initCore(db, 1);
         const defaultShopId = seedData(db);
-        initCore(db, defaultShopId);
         initInventory(db, defaultShopId);
         initTransactions(db, defaultShopId);
         initItems(db);
