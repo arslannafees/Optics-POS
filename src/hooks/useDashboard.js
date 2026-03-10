@@ -21,8 +21,8 @@ export function useDashboard(settings) {
         setIsLoading(true);
         try {
             const stored = localStorage.getItem('lastLogCheck');
-            // Default to 24 hours ago if never set (e.g. fresh install/deploy)
-            const lastCheck = stored || String(Date.now() - 24 * 60 * 60 * 1000);
+            // Default to epoch (0) so all existing logs show as new on first visit
+            const lastCheck = stored || '0';
             const q = new URLSearchParams({ shopId: currentShop.id });
             if (currentBranch) q.append('branchId', currentBranch.id);
             q.append('lastLogCheck', lastCheck);
