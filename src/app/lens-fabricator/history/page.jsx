@@ -5,14 +5,18 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, ChevronRight, CheckCircle2, RefreshCw, Download } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { Search, ChevronRight, CheckCircle2, RefreshCw, Calendar as CalendarIcon } from "lucide-react";
 
 export default function FabricationHistoryPage() {
   const [jobs, setJobs] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [search, setSearch] = React.useState("");
-  const [fromDate, setFromDate] = React.useState("");
-  const [toDate, setToDate] = React.useState("");
+  const [fromDate, setFromDate] = React.useState(null);
+  const [toDate, setToDate] = React.useState(null);
   const [user, setUser] = React.useState(null);
 
   React.useEffect(() => {
@@ -28,8 +32,8 @@ export default function FabricationHistoryPage() {
     try {
       const shopId = user.shopId || localStorage.getItem("selectedShopId");
       let url = `/api/fabrication?shopId=${shopId}&status=done&limit=500`;
-      if (fromDate) url += `&fromDate=${fromDate}`;
-      if (toDate) url += `&toDate=${toDate}`;
+      if (fromDate) url += `&fromDate=${format(fromDate, "yyyy-MM-dd")}`;
+      if (toDate) url += `&toDate=${format(toDate, "yyyy-MM-dd")}`;
       const res = await fetch(url);
       const data = await res.json();
       setJobs(Array.isArray(data) ? data : []);
@@ -75,8 +79,41 @@ export default function FabricationHistoryPage() {
             onChange={e => setSearch(e.target.value)}
           />
         </div>
-        <Input type="date" className="w-[160px]" value={fromDate} onChange={e => setFromDate(e.target.value)} placeholder="From date" />
-        <Input type="date" className="w-[160px]" value={toDate} onChange={e => setToDate(e.target.value)} placeholder="To date" />
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn("w-[160px] justify-start text-left font-normal", !fromDate && "text-muted-foreground")}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {fromDate ? format(fromDate, "MMM dd, yyyy") : "From date"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar mode="single" selected={fromDate} onSelect={setFromDate} initialFocus />
+          </PopoverContent>
+        </Popover>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn("w-[160px] justify-start text-left font-normal", !toDate && "text-muted-foreground")}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {toDate ? format(toDate, "MMM dd, yyyy") : "To date"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={toDate}
+              onSelect={setToDate}
+              initialFocus
+              disabled={(d) => fromDate && d < fromDate}
+            />
+          </PopoverContent>
+        </Popover>
       </div>
 
       {/* Summary */}
