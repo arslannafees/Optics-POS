@@ -24,10 +24,11 @@ export function BranchProvider({ children }) {
         const handleLogin = () => {
             setCurrentShop(null);
             setCurrentBranch(null);
+            refreshShops(); // Invalidate SWR cache so new/changed shops are fetched fresh
         };
         window.addEventListener('userLogin', handleLogin);
         return () => window.removeEventListener('userLogin', handleLogin);
-    }, []);
+    }, [refreshShops]);
 
     useEffect(() => {
         const u = JSON.parse(localStorage.getItem('user') || '{}');
