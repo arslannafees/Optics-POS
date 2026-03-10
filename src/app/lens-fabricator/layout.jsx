@@ -43,6 +43,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useSettings } from "@/contexts/SettingsContext";
+import { useBranch } from "@/contexts/BranchContext";
+import { Store, MapPin } from "lucide-react";
 
 const fabricatorNav = [
   { title: "Dashboard", url: "/lens-fabricator", icon: LayoutDashboard },
@@ -183,6 +185,7 @@ function FabricatorSidebar() {
 export default function LensFabricatorLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { currentShop, currentBranch } = useBranch();
   const [isReady, setIsReady] = React.useState(false);
 
   React.useEffect(() => {
@@ -217,6 +220,20 @@ export default function LensFabricatorLayout({ children }) {
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
           <span className="font-semibold text-sm text-muted-foreground">Lens Fabricator Portal</span>
+          <div className="ml-auto flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Store className="size-4 text-muted-foreground hidden sm:block" />
+              <div className="flex h-9 w-[180px] items-center px-3 text-sm font-medium bg-secondary/50 rounded-lg text-foreground/90">
+                {currentShop?.name || "Select Shop"}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <MapPin className="size-4 text-muted-foreground hidden sm:block" />
+              <div className="flex h-9 w-[180px] items-center px-3 text-sm font-medium bg-secondary/50 rounded-lg text-foreground/90">
+                {currentBranch?.name || "All Branches"}
+              </div>
+            </div>
+          </div>
         </header>
         <main className="flex-1 overflow-auto">
           <div className="container py-6 max-w-7xl mx-auto px-4 md:px-6">
