@@ -8,7 +8,7 @@ import { initSettings } from './schema/settings';
 import { initIndexes } from './schema/indexes';
 import { seedData } from './schema/seed';
 
-const CURRENT_VERSION = 12;
+const CURRENT_VERSION = 13;
 
 export function initialize() {
     if (global._sqliteInitialized) return db;
@@ -19,7 +19,7 @@ export function initialize() {
     if (dbVersion < CURRENT_VERSION) {
         console.log(`[DB] Initialize/Migrate (v${dbVersion} -> v${CURRENT_VERSION})...`);
 
-        if (dbVersion > 0 && dbVersion < 12) {
+        if (dbVersion > 0 && dbVersion < 13) {
             try {
                 // Disable foreign keys temporarily to allow dropping the table
                 db.pragma('foreign_keys = OFF');

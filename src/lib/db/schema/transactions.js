@@ -46,8 +46,14 @@ export function initTransactions(db, defaultShopId) {
     right_sph TEXT, right_cyl TEXT, right_axis TEXT, right_add TEXT, right_prism TEXT, right_diameter TEXT,
     right_base_curve TEXT, right_segment TEXT, right_pd TEXT, left_sph TEXT, left_cyl TEXT, left_axis TEXT,
     left_add TEXT, left_prism TEXT, left_diameter TEXT, left_base_curve TEXT, left_segment TEXT, left_pd TEXT,
-    remarks TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    remarks TEXT, pd_type TEXT DEFAULT 'dual', total_pd TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
+
+  // Migration: add pd_type and total_pd columns if missing
+  const rxCols = db.prepare("PRAGMA table_info(prescriptions)").all().map(c => c.name);
+  if (!rxCols.includes('pd_type')) db.exec("ALTER TABLE prescriptions ADD COLUMN pd_type TEXT DEFAULT 'dual'");
+  if (!rxCols.includes('total_pd')) db.exec("ALTER TABLE prescriptions ADD COLUMN total_pd TEXT");
 
   // Migrations to add local_id if missing
   const tablesToUpdate = ['customers', 'orders', 'vendors', 'purchases'];

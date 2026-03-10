@@ -12,6 +12,7 @@ export function seedData(db) {
     const defaultShopId = db.prepare('SELECT id FROM shops LIMIT 1').get().id;
     seedAdmin(db, 'admin@optics.com', 'Admin', defaultShopId, 'admin');
     seedAdmin(db, 'superadmin@optics.com', 'Super Admin', null, 'super-admin');
+    seedDefaultBranch(db, defaultShopId);
     return defaultShopId;
 }
 
@@ -20,5 +21,12 @@ function seedAdmin(db, email, name, shopId, role) {
     if (!exists) {
         db.prepare(`INSERT INTO users(name, email, password, role, shop_id) VALUES(?, ?, ?, ?, ?)`)
             .run(name, email, '$2b$10$fME220VnkWo4setcUcf2vOz9ItzqOXjXMMOKqQq/8sAaoMhTWu6pa', role, shopId);
+    }
+}
+
+function seedDefaultBranch(db, shopId) {
+    const exists = db.prepare('SELECT id FROM branches WHERE shop_id = ?').get(shopId);
+    if (!exists) {
+        db.prepare(`INSERT INTO branches (shop_id, name) VALUES (?, ?)`).run(shopId, 'Main Branch');
     }
 }

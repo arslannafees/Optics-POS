@@ -13,12 +13,18 @@ export function initInventory(db, defaultShopId) {
 
   db.exec(`CREATE TABLE IF NOT EXISTS frames (
     id INTEGER PRIMARY KEY AUTOINCREMENT, brand_id INTEGER REFERENCES brands(id) ON DELETE CASCADE,
-    brand_name TEXT, model TEXT, category TEXT DEFAULT 'glass', size TEXT, color TEXT,
+    brand_name TEXT, model TEXT, category TEXT DEFAULT 'glass', size TEXT, color TEXT, material TEXT,
     cost REAL DEFAULT 0, price REAL DEFAULT 0, barcode TEXT, shape TEXT, stock INTEGER DEFAULT 0,
     opening_balance INTEGER DEFAULT 0, remarks TEXT, active INTEGER DEFAULT 1,
     shop_id INTEGER REFERENCES shops(id), branch_id INTEGER DEFAULT 1,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
+
+  // Migration: add material column if missing
+  const frameCols = db.prepare("PRAGMA table_info(frames)").all().map(c => c.name);
+  if (!frameCols.includes('material')) {
+    db.exec("ALTER TABLE frames ADD COLUMN material TEXT");
+  }
 
   db.exec(`CREATE TABLE IF NOT EXISTS lenses(
     id INTEGER PRIMARY KEY AUTOINCREMENT, brand_id INTEGER REFERENCES brands(id) ON DELETE CASCADE,
