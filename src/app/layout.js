@@ -4,6 +4,7 @@ import { AppLayout } from "@/components/app-layout";
 import { Toaster } from "@/components/ui/sonner";
 import { SettingsProvider } from "@/contexts/SettingsContext";
 import { BranchProvider } from "@/contexts/BranchContext";
+import { ThemeProvider } from "next-themes";
 
 
 const dmSans = DM_Sans({
@@ -46,12 +47,14 @@ export default function RootLayout({ children }) {
         className={`${dmSans.variable} ${poppins.variable} font-sans antialiased min-h-screen bg-background`}
         suppressHydrationWarning
       >
-        <BranchProvider>
-          <SettingsProvider>
-            <AppLayout>{children}</AppLayout>
-            <Toaster position="top-right" richColors />
-          </SettingsProvider>
-        </BranchProvider>
+        <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
+          <BranchProvider>
+            <SettingsProvider>
+              <AppLayout>{children}</AppLayout>
+              <Toaster position="top-right" richColors />
+            </SettingsProvider>
+          </BranchProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
