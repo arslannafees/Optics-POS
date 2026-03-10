@@ -27,6 +27,7 @@ A modern, full-featured **Point of Sale (POS) system** designed specifically for
 - [Tech Stack](#️-tech-stack)
 - [API Reference](#-api-reference)
 - [Configuration](#️-configuration)
+- [Lens Fabrication Portal](#-lens-fabrication-portal)
 - [Activity Logging](#-activity-logging)
 - [Security](#-security)
 - [Troubleshooting](#-troubleshooting)
@@ -132,20 +133,36 @@ A modern, full-featured **Point of Sale (POS) system** designed specifically for
 - **7-Day Trial Accounts** - Create trial accounts with 7-day validity period
 - **Extend Account Validity** - Extend expiration dates for existing accounts
 
+### 🔬 Lens Fabrication Portal
+
+- **Fabrication Job Queue** - Automatically create a fabrication job when an order contains frame or lens items
+- **Job Statuses** - Track jobs through: Queued → In Progress → Done (or Flagged for issues)
+- **Priority Levels** - Assign normal or urgent priority to jobs
+- **Job Details** - Each job captures patient name, frame info, lens info, prescription data, optician notes, and fabricator notes
+- **Flag & Notes** - Fabricators can flag jobs with a reason and add internal notes
+- **Job History Logs** - Full audit trail of status changes per job with timestamps and user attribution
+- **Dedicated Portal** - Lens fabricators access a clean, role-restricted portal at `/lens-fabricator`
+- **Fabrication History** - Searchable history of all completed/flagged jobs with date filtering
+- **Flagged Job Alerts** - Flagged fabrication jobs surface in the notification tray for quick attention
+- **Shop & Branch Context** - Portal navbar shows current shop and branch
+
 ### 🔑 User Roles & Permissions
 
 | Role | Access Level |
 |------|--------------|
 | **Super Admin** | Full platform access, manage all shops and users |
 | **Admin** | Shop-level access, restricted to assigned shop/branch |
+| **Staff** | Same app as Admin but without Reports, Analytics, Settings, and Logs |
+| **Lens Fabricator** | Restricted portal access — view and update fabrication jobs only |
 
 ### 📋 Activity Logging
 
 - **Change Tracking** - All create/update/delete operations are logged
 - **User Attribution** - Track which user made each change
-- **Change Details** - View old vs new values for updates
-- **Activity Alerts** - Dashboard notification when new logs exist since last login
-- **Notification Tray** - Slide-out notification panel with adjustable width for viewing alerts
+- **Change Details** - View old vs new values for updates, including brand and color for frame/lens items
+- **Activity Alerts** - Dashboard notification when new logs exist (defaults to last 24 h on fresh install)
+- **All-Time Count** - Shows total log count on first visit rather than just recent activity
+- **Notification Tray** - Slide-out notification panel with adjustable width for viewing alerts and flagged fabrication jobs
 - **Filterable Logs** - Filter by entity type, action, user, and date range
 - **Audit Trail** - Complete audit history for compliance
 
@@ -232,6 +249,7 @@ optics-pos/
 │   │   │   ├── activity-logs/       # Activity logging API
 │   │   │   ├── analytics/           # Analytics data
 │   │   │   ├── branches/            # Branch management
+│   │   │   ├── fabrication/         # Lens fabrication jobs API
 │   │   │   ├── brands/              # Brand CRUD
 │   │   │   ├── contact-lenses/      # Contact lens CRUD
 │   │   │   ├── customers/           # Customer CRUD + prescriptions
@@ -268,7 +286,8 @@ optics-pos/
 │   │   │   ├── profile/             # User profile
 │   │   │   ├── stock-in-hand/       # Stock report
 │   │   │   ├── item-ledger/         # Item ledger page
-│   │   │   └── super-admin/         # Super admin dashboard (shops, branches, accounts, settings)
+│   │   │   ├── super-admin/         # Super admin dashboard (shops, branches, accounts, settings)
+│   │   │   └── lens-fabricator/     # Lens fabricator portal (jobs, [id] detail, history)
 │   │   │
 │   │   ├── globals.css              # Global styles & Tailwind imports
 │   │   └── layout.js                # Root layout with providers
@@ -326,7 +345,7 @@ optics-pos/
 
 ## 🗄️ Database Schema
 
-The application uses **SQLite** (via better-sqlite3) with **16 tables** for complete data management. The database is automatically created on first run with all migrations applied.
+The application uses **SQLite** (via better-sqlite3) with **18 tables** for complete data management. The database is automatically created on first run with all migrations applied. The database file is stored **outside the application folder** so it survives app updates and reinstalls.
 
 ### Core Tables
 
@@ -359,6 +378,8 @@ The application uses **SQLite** (via better-sqlite3) with **16 tables** for comp
 | `purchase_items` | Purchase line items | id, purchase_id, item_type, item_id, quantity, cost, total |
 | `prescriptions` | Eye prescriptions | id, order_id, customer_id, right_*, left_*, pd_type, total_pd |
 | `activity_logs` | Audit trail | id, shop_id, user_id, action, entity_type, entity_id, changes, created_at |
+| `fabrication_jobs` | Lens fabrication queue | id, order_id, shop_id, branch_id, status, priority, patient_name, frame_info, lens_info, prescription_data, optician_notes, fabricator_notes, flag_reason |
+| `fabrication_job_logs` | Fabrication status history | id, job_id, status, note, updated_by, updated_by_name, created_at |
 
 ### Supported Item Types
 
@@ -474,6 +495,14 @@ All API routes are located in `src/app/api/` and require authentication via JWT 
 | `GET` | `/api/reports/purchases` | Purchase report data |
 | `GET` | `/api/reports/collection` | Collection report data |
 | `GET` | `/api/reports/receivable` | Receivable report data |
+
+### Lens Fabrication
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET/POST` | `/api/fabrication` | List/create fabrication jobs |
+| `GET/PUT` | `/api/fabrication/[id]` | Get/update fabrication job (status, notes, flag) |
+| `GET` | `/api/fabrication/stats` | Fabrication job counts by status |
 
 ### Activity Logs
 
