@@ -14,7 +14,7 @@ const dmSans = DM_Sans({
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "500", "700"], // Reduced from 4 weights to 3
-  preload: true,
+  preload: false,
 });
 
 const poppins = Poppins({
