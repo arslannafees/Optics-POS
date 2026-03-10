@@ -24,12 +24,13 @@ export default function Dashboard() {
   // This ensures "Dismiss All" only hides what the user has currently seen.
   React.useEffect(() => {
     setDismissed(false);
-  }, [d.alerts.length, d.lowStockItems.length, d.pendingPayments.length]);
+  }, [d.alerts.length, d.lowStockItems.length, d.pendingPayments.length, d.flaggedFabJobs.length]);
 
   const visibleAlerts = dismissed ? [] : d.alerts;
   const filteredAlerts = visibleAlerts.filter(a => !a.includes('🔔 Low Stock:') && !a.includes('💰 Outstanding:'));
   const visibleLowStock = dismissed ? [] : d.lowStockItems;
   const visiblePayments = dismissed ? [] : d.pendingPayments;
+  const visibleFlaggedJobs = dismissed ? [] : d.flaggedFabJobs;
 
   const handleDismissAll = () => {
     setDismissed(true);
@@ -45,7 +46,7 @@ export default function Dashboard() {
             <Button variant="outline" size="icon" className="relative h-10 w-10 rounded-full border-muted-foreground/20 hover:bg-muted/80 transition-all duration-300">
               <Bell className="h-5 w-5 text-muted-foreground" />
               {(() => {
-                const visibleAlertsCount = filteredAlerts.length + visibleLowStock.length + visiblePayments.length;
+                const visibleAlertsCount = filteredAlerts.length + visibleLowStock.length + visiblePayments.length + visibleFlaggedJobs.length;
                 return visibleAlertsCount > 0 ? (
                   <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-background animate-pulse">
                     {visibleAlertsCount}
@@ -63,6 +64,7 @@ export default function Dashboard() {
               alerts={visibleAlerts}
               lowStockItems={visibleLowStock}
               pendingPayments={visiblePayments}
+              flaggedFabJobs={visibleFlaggedJobs}
               currency={settings.currency}
               onDismissAll={handleDismissAll}
             />

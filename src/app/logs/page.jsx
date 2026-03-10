@@ -90,12 +90,14 @@ function formatFieldValue(value) {
                     if (typeof item === "object" && item !== null) {
                         const type = item.type ?? item.itemType ?? "";
                         const name = item.name || item.itemName || "";
+                        const brand = item.brand || "";
+                        const color = item.color || "";
                         const qty = item.quantity ?? item.qty ?? "";
                         const price = item.price ?? "";
                         const total = item.total ?? "";
 
                         const label = name
-                            ? `${name}${type ? ` (${type})` : ""}`
+                            ? `${name}${type && type !== "eye-checkup" ? ` (${type})` : ""}`
                             : type
                             ? type.charAt(0).toUpperCase() + type.slice(1)
                             : `Item ${i + 1}`;
@@ -109,9 +111,14 @@ function formatFieldValue(value) {
                             .join("  ·  ");
 
                         return (
-                            <div key={i} className="flex items-start gap-2 bg-white/60 rounded px-2 py-1.5 border border-slate-100">
-                                <span className="font-medium text-slate-700 truncate">{label}</span>
-                                {details && <span className="text-slate-500 text-xs mt-0.5 shrink-0">{details}</span>}
+                            <div key={i} className="flex flex-col bg-white/60 rounded px-2 py-1.5 border border-slate-100">
+                                <span className="font-medium text-slate-700">{label}</span>
+                                {(brand || color) && (
+                                    <span className="text-slate-500 text-xs mt-0.5">
+                                        {[brand && `Brand: ${brand}`, color && `Color: ${color}`].filter(Boolean).join("  ·  ")}
+                                    </span>
+                                )}
+                                {details && <span className="text-slate-500 text-xs mt-0.5">{details}</span>}
                             </div>
                         );
                     }
@@ -501,7 +508,7 @@ export default function ActivityLogsPage() {
                                                 <Badge variant="secondary" className="capitalize mb-1">
                                                     {log.entityType?.replace(/_/g, " ")}
                                                 </Badge>
-                                                <span className="text-xs text-muted-foreground max-w-[200px] truncate">
+                                                <span className="text-xs text-muted-foreground max-w-[240px] break-words text-center">
                                                     {log.entityName || `ID: ${log.entityId}`}
                                                 </span>
                                             </div>

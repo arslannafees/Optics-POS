@@ -5,6 +5,7 @@ import { ShoppingBag, Calendar } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
 import { OrderStatusBadge } from "./OrderStatusBadge";
+import { FabricationStatusBadge } from "./FabricationStatusBadge";
 
 export function OrderSummaryCard({ order, dateFormat }) {
     return (
@@ -14,7 +15,10 @@ export function OrderSummaryCard({ order, dateFormat }) {
                     <CardTitle className="text-lg">Order #{String(order.localId || order.id).padStart(4, "0")}</CardTitle>
                     <CardDescription>Placed on {formatDate(order.date, dateFormat)}</CardDescription>
                 </div>
-                <OrderStatusBadge status={order.status} />
+                <div className="flex items-center gap-2 flex-wrap justify-end">
+                    <FabricationStatusBadge orderId={order.id} />
+                    <OrderStatusBadge status={order.status} />
+                </div>
             </CardHeader>
             <CardContent className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-1">

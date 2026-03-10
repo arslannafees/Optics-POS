@@ -14,6 +14,7 @@ export function useDashboard(settings) {
     const [alerts, setAlerts] = useState([]);
     const [showEmailAlert, setShowEmailAlert] = useState(true);
     const [newLogsCount, setNewLogsCount] = useState(0);
+    const [flaggedFabJobs, setFlaggedFabJobs] = useState([]);
 
     const loadDashboardData = useCallback(async () => {
         if (!currentShop) return;
@@ -24,9 +25,13 @@ export function useDashboard(settings) {
             if (currentBranch) q.append('branchId', currentBranch.id);
             if (lastCheck) q.append('lastLogCheck', lastCheck);
 
-            const res = await fetch(`/api/dashboard?${q.toString()}`);
-            if (res.ok) {
-                const data = await res.json();
+            const [dashRes, fabRes] = await Promise.all([
+                fetch(`/api/dashboard?${q.toString()}`),
+                fetch(`/api/fabrication?shopId=${currentShop.id}&status=flagged&limit=50`),
+            ]);
+
+            if (dashRes.ok) {
+                const data = await dashRes.json();
                 setStats({
                     totalOrders: data.counts?.orders || 0,
                     totalSales: data.sales?.monthItemsCount || 0,
@@ -40,6 +45,11 @@ export function useDashboard(settings) {
                 setAlerts(data.alerts || []);
                 setNewLogsCount(data.newLogsCount || 0);
             }
+
+            if (fabRes.ok) {
+                const fabData = await fabRes.json();
+                setFlaggedFabJobs(Array.isArray(fabData) ? fabData : []);
+            }
         } catch (error) { console.error(error); } finally { setIsLoading(false); }
     }, [currentShop, currentBranch]);
 
@@ -49,6 +59,7 @@ export function useDashboard(settings) {
 
     return {
         isLoading, stats, chartData, recentOrders, lowStockItems, pendingPayments, alerts,
-        showEmailAlert, setShowEmailAlert, newLogsCount, setNewLogsCount, loadDashboardData
+        showEmailAlert, setShowEmailAlert, newLogsCount, setNewLogsCount, loadDashboardData,
+        flaggedFabJobs, setFlaggedFabJobs,
     };
 }

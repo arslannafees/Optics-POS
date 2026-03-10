@@ -6,9 +6,10 @@ import { initTransactions } from './schema/transactions';
 import { initItems } from './schema/items';
 import { initSettings } from './schema/settings';
 import { initIndexes } from './schema/indexes';
+import { initFabrication } from './schema/fabrication';
 import { seedData } from './schema/seed';
 
-const CURRENT_VERSION = 13;
+const CURRENT_VERSION = 14;
 
 export function initialize() {
     if (global._sqliteInitialized) return db;
@@ -69,6 +70,7 @@ export function initialize() {
         initItems(db);
         initSettings(db, defaultShopId);
         initIndexes(db);
+        initFabrication(db);
         db.pragma(`user_version = ${CURRENT_VERSION}`);
     }
 

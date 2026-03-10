@@ -502,6 +502,9 @@ export function AppLayout({ children }) {
     } else if (userObj?.role === 'super-admin' && !pathname.startsWith("/super-admin")) {
       // Super admin is not allowed on shop dashboard
       router.push("/super-admin");
+    } else if (userObj?.role === 'lens-fabricator' && !pathname.startsWith("/lens-fabricator")) {
+      // Lens fabricators only access the fabricator portal
+      router.push("/lens-fabricator");
     } else {
       setIsAuthenticated(true);
 
@@ -515,8 +518,8 @@ export function AppLayout({ children }) {
     setIsLoading(false);
   }, [pathname, router]);
 
-  // Don't show sidebar on login/signup pages or super-admin pages
-  if (pathname === "/login" || pathname === "/signup" || pathname.startsWith("/super-admin")) {
+  // Don't show sidebar on login/signup pages, super-admin pages, or lens-fabricator portal
+  if (pathname === "/login" || pathname === "/signup" || pathname.startsWith("/super-admin") || pathname.startsWith("/lens-fabricator")) {
     return <>{children}</>;
   }
 

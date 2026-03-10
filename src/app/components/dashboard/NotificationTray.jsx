@@ -2,24 +2,25 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Bell, AlertTriangle, Info, Package, DollarSign, Glasses, Eye, Sparkles, CreditCard, ShoppingCart } from "lucide-react";
+import { Bell, AlertTriangle, Info, Package, DollarSign, Glasses, Eye, Sparkles, CreditCard, ShoppingCart, Flag } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import ContactLensIcon from "@/components/ContactLensIcon";
 
-export function NotificationTray({ alerts, lowStockItems, pendingPayments, currency, onDismissAll }) {
+export function NotificationTray({ alerts, lowStockItems, pendingPayments, flaggedFabJobs = [], currency, onDismissAll }) {
     const filteredAlerts = alerts.filter(a => !a.includes('🔔 Low Stock:') && !a.includes('💰 Outstanding:'));
-    const hasNotifications = filteredAlerts.length > 0 || lowStockItems.length > 0 || pendingPayments.length > 0;
+    const hasNotifications = filteredAlerts.length > 0 || lowStockItems.length > 0 || pendingPayments.length > 0 || flaggedFabJobs.length > 0;
 
     const [isDismissing, setIsDismissing] = useState(false);
     const [dismissedItems, setDismissedItems] = useState(new Set());
     const [showCaughtUp, setShowCaughtUp] = useState(false);
 
-    const totalItems = filteredAlerts.length + pendingPayments.length + lowStockItems.length;
+    const totalItems = filteredAlerts.length + pendingPayments.length + lowStockItems.length + flaggedFabJobs.length;
     const allItems = [
         ...filteredAlerts.map((_, i) => `alert-${i}`),
         ...pendingPayments.map((_, i) => `payment-${i}`),
-        ...lowStockItems.map((_, i) => `item-${i}`)
+        ...lowStockItems.map((_, i) => `item-${i}`),
+        ...flaggedFabJobs.map((_, i) => `fab-${i}`),
     ];
 
     const handleDismissAll = useCallback(() => {
@@ -81,7 +82,7 @@ export function NotificationTray({ alerts, lowStockItems, pendingPayments, curre
                     <h3 className="font-bold text-sm tracking-tight">Notifications</h3>
                 </div>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary uppercase">
-                    {filteredAlerts.length + lowStockItems.length + pendingPayments.length} Total
+                    {filteredAlerts.length + lowStockItems.length + pendingPayments.length + flaggedFabJobs.length} Total
                 </span>
             </div>
 
@@ -162,6 +163,53 @@ export function NotificationTray({ alerts, lowStockItems, pendingPayments, curre
                                             <p className="text-xs font-bold text-amber-600">{currency} {order.balance.toLocaleString()}</p>
                                             <p className="text-[10px] text-muted-foreground/50">Balance</p>
                                         </div>
+                                    </Link>
+                                );
+                            })}
+                        </>
+                    )}
+
+                    {/* Flagged Lens Fabrication Jobs */}
+                    {flaggedFabJobs.length > 0 && (
+                        <>
+                            <div className="mx-2 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-red-500/5 text-red-600 rounded-lg my-3 border border-red-500/10">
+                                Lens Lab Issues
+                            </div>
+                            {flaggedFabJobs.map((job, i) => {
+                                const itemKey = `fab-${i}`;
+                                const isItemDismissed = dismissedItems.has(itemKey);
+                                return (
+                                    <Link
+                                        key={itemKey}
+                                        href={`/order/${job.orderId}`}
+                                        className="flex items-center justify-between p-4 rounded-xl hover:bg-muted/50 group cursor-pointer"
+                                        style={{
+                                            opacity: isItemDismissed ? 0 : 1,
+                                            transform: isItemDismissed ? 'translateX(-100%)' : 'translateX(0)',
+                                            maxHeight: isItemDismissed ? '0px' : '100px',
+                                            padding: isItemDismissed ? '0 16px' : undefined,
+                                            margin: isItemDismissed ? '0' : undefined,
+                                            overflow: 'hidden',
+                                            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                                            pointerEvents: isDismissing ? 'none' : 'auto'
+                                        }}
+                                    >
+                                        <div className="flex items-center gap-4 min-w-0">
+                                            <div className="p-2 rounded-lg bg-red-50 text-red-600 group-hover:bg-red-100 transition-colors shrink-0">
+                                                <Flag className="h-4 w-4" />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="text-xs font-semibold truncate text-foreground/90">
+                                                    {job.patientName || 'Unknown Patient'}
+                                                </p>
+                                                <p className="text-[10px] text-muted-foreground/70 font-medium truncate">
+                                                    Order #{String(job.orderLocalId || job.orderId).padStart(4, '0')} — {job.flagReason || 'Issue flagged by fabricator'}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-600 border border-red-200 whitespace-nowrap ml-2 shrink-0">
+                                            Flagged
+                                        </span>
                                     </Link>
                                 );
                             })}

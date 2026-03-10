@@ -26,7 +26,15 @@ export function useOrderMutations(setFormData, lists) {
                 if (field === "itemId") {
                     const source = lists[item.type === 'frame' ? 'frames' : item.type === 'lens' ? 'lenses' : item.type === 'contact-lens' ? 'contactLenses' : 'accessories'] || [];
                     const selected = source.find(i => i.id.toString() === value);
-                    return { ...item, itemId: value, name: selected?.name || "", price: selected?.price || "", quantity: "1" };
+                    return {
+                        ...item,
+                        itemId: value,
+                        name: selected?.name || "",
+                        brand: selected?.brand || "",
+                        color: selected?.color || "",
+                        price: selected?.price || "",
+                        quantity: "1",
+                    };
                 }
                 return { ...item, [field]: value };
             })

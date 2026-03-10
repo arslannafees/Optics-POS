@@ -396,6 +396,7 @@ export default function AccountsPage() {
                                         <SelectContent className="rounded-xl border-gray-100 shadow-xl shadow-gray-100/50">
                                             <SelectItem value="admin">Owner</SelectItem>
                                             <SelectItem value="staff">Staff</SelectItem>
+                                            <SelectItem value="lens-fabricator">Lens Fabricator</SelectItem>
                                             <SelectItem value="super-admin">Super Admin</SelectItem>
                                         </SelectContent>
                                     </Select>
@@ -617,10 +618,11 @@ export default function AccountsPage() {
                                                                             <Shield className={cn("size-3.5",
                                                                                 user.role === 'admin' ? "text-red-500" :
                                                                                     user.role === 'staff' ? "text-purple-500" :
-                                                                                        "text-blue-500"
+                                                                                        user.role === 'lens-fabricator' ? "text-teal-500" :
+                                                                                            "text-blue-500"
                                                                             )} />
                                                                             <span className="text-xs font-bold text-gray-600 capitalize">
-                                                                                {user.role === 'admin' ? 'Owner' : user.role}
+                                                                                {user.role === 'admin' ? 'Owner' : user.role === 'lens-fabricator' ? 'Lens Fabricator' : user.role}
                                                                             </span>
                                                                         </div>
 
@@ -771,9 +773,10 @@ export default function AccountsPage() {
                                         "mt-1 font-bold text-[10px] uppercase px-2 py-0.5 rounded-lg border-0 shadow-none",
                                         selectedUser.role === 'super-admin' ? "bg-blue-50 text-blue-600" :
                                             selectedUser.role === 'staff' ? "bg-purple-50 text-purple-600" :
-                                                "bg-red-50 text-red-600"
+                                                selectedUser.role === 'lens-fabricator' ? "bg-teal-50 text-teal-600" :
+                                                    "bg-red-50 text-red-600"
                                     )}>
-                                        {selectedUser.role === 'admin' ? 'Owner' : selectedUser.role}
+                                        {selectedUser.role === 'admin' ? 'Owner' : selectedUser.role === 'lens-fabricator' ? 'Lens Fabricator' : selectedUser.role}
                                     </Badge>
                                 </div>
                             </div>
@@ -943,6 +946,7 @@ export default function AccountsPage() {
                                         <SelectContent className="rounded-xl border-gray-100 shadow-xl shadow-gray-100/50">
                                             <SelectItem value="admin">Owner</SelectItem>
                                             <SelectItem value="staff">Staff</SelectItem>
+                                            <SelectItem value="lens-fabricator">Lens Fabricator</SelectItem>
                                             <SelectItem value="super-admin">Super Admin</SelectItem>
                                         </SelectContent>
                                     </Select>

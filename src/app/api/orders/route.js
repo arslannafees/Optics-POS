@@ -222,8 +222,26 @@ export async function POST(req) {
       }
     }
 
+    // Auto-create fabrication job if order contains both frame and lens items
+    if (items && Array.isArray(items)) {
+      const hasFrame = items.some(i => (i.type || i.itemType) === 'frame');
+      const hasLens = items.some(i => ['lens', 'spectacle_lens', 'spectacle-lens'].includes((i.type || i.itemType)));
+      if (hasFrame || hasLens) {
+        const frameItems = items.filter(i => (i.type || i.itemType) === 'frame');
+        const lensItems = items.filter(i => ['lens', 'spectacle_lens', 'spectacle-lens'].includes((i.type || i.itemType)));
+        const frameInfo = frameItems.length > 0 ? JSON.stringify(frameItems.map(f => ({ name: f.name || f.itemName, id: f.itemId, qty: f.quantity }))) : null;
+        const lensInfo = lensItems.length > 0 ? JSON.stringify(lensItems.map(l => ({ name: l.name || l.itemName, id: l.itemId, qty: l.quantity }))) : null;
+        const rxData = prescription ? JSON.stringify(prescription) : null;
+        const isPriority = (notes || '').toLowerCase().includes('urgent') || (notes || '').toLowerCase().includes('rush') || (notes || '').toLowerCase().includes('same-day') ? 'rush' : 'normal';
+        db.prepare(`
+          INSERT INTO fabrication_jobs (order_id, shop_id, branch_id, status, priority, patient_name, frame_info, lens_info, prescription_data, optician_notes)
+          VALUES (?, ?, ?, 'queued', ?, ?, ?, ?, ?, ?)
+        `).run(orderId, shopId ? parseInt(shopId) : null, branchId ? parseInt(branchId) : null, isPriority, customerName, frameInfo, lensInfo, rxData, notes || null);
+      }
+    }
+
     const newOrder = db.prepare(`
-      SELECT 
+      SELECT
         id,
         customer_name as customer,
         order_type as orderType,
@@ -241,7 +259,7 @@ export async function POST(req) {
         shop_id as shopId,
         branch_id as branchId,
         local_id as localId
-      FROM orders 
+      FROM orders
       WHERE id = ?
     `).get(orderId);
 
