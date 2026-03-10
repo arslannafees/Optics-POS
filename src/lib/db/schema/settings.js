@@ -24,6 +24,11 @@ export function initSettings(db, defaultShopId) {
 
     if (hasGlobalUnique) migrateSettings(db, defaultShopId);
 
+    // Default settings for new installations
+    const defaults = [['currency', 'PKR'], ['taxRate', '18'], ['dateFormat', 'DD/MM/YYYY'], ['invoicePrefix', 'INV'], ['invoiceStartNumber', '1'], ['lowStockThreshold', '5'], ['lowStockAlert', 'true'], ['printerType', 'laserjet'], ['businessName', 'Default Shop']];
+    const ins = db.prepare('INSERT OR IGNORE INTO settings(shop_id, key, value) VALUES(?, ?, ?)');
+    for (const [k, v] of defaults) ins.run(defaultShopId, k, v);
+
     // Default Creator PIN
     const pinExists = db.prepare('SELECT id FROM settings WHERE key = ? AND shop_id = ?').get('creator_pin', defaultShopId);
     if (!pinExists) db.prepare(`INSERT OR IGNORE INTO settings(key, value, shop_id) VALUES(?, ?, ?)`).run('creator_pin', 'BranchCreatorPin3047', defaultShopId);
