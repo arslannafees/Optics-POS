@@ -28,8 +28,8 @@ export function ThermalFooter({ order, settings, cashier }) {
                 </div>
 
                 <div className="flex justify-between border-t-2 border-black py-2 bg-slate-100 px-2 rounded-sm">
-                    <span className="text-xl font-black">TOTAL</span>
-                    <span className="text-xl font-black">{cur} {Number(order.total || 0).toLocaleString()}</span>
+                    <span className="text-lg font-black">TOTAL</span>
+                    <span className="text-lg font-black">{cur} {Number(order.total || 0).toLocaleString()}</span>
                 </div>
 
                 <div className="space-y-2">

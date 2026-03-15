@@ -19,10 +19,10 @@ export function ThermalHeader({ order, settings }) {
         <div className="text-center space-y-1.5 mb-6">
             <div className="flex flex-col items-center mb-4">
                 {settings?.businessLogo && (
-                    <img src={settings.businessLogo} alt="Logo" className="h-12 w-auto object-contain mb-2 mix-blend-multiply" />
+                    <img src={settings.businessLogo} alt="Logo" className="h-20 w-auto object-contain mb-2 mix-blend-multiply" />
                 )}
                 <div className="flex flex-col items-center">
-                    <h1 className="text-2xl font-black uppercase tracking-tight leading-none">
+                    <h1 className="text-lg font-black uppercase tracking-tight leading-none">
                         {settings?.businessName || "OPTICS"}
                     </h1>
                     {order?.branchName && order.branchName !== settings?.businessName && (
@@ -37,8 +37,8 @@ export function ThermalHeader({ order, settings }) {
             </div>
 
             <div className="border-t border-black/10 pt-2 space-y-0.5">
-                <p className="text-[12px] font-black">TEL: {settings?.businessPhone}</p>
-                <p className="text-[9px] uppercase font-bold">EMAIL: {settings?.businessEmail}</p>
+                <p className="text-[11px] font-black">TEL: {settings?.businessPhone}</p>
+                <p className="text-[10px] uppercase font-bold">EMAIL: {settings?.businessEmail}</p>
                 {settings?.gstNumber && (
                     <p className="text-[10px] font-black uppercase">GSTIN: {settings.gstNumber}</p>
                 )}
