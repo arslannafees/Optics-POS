@@ -16,6 +16,12 @@ A modern, full-featured **Point of Sale (POS) system** designed specifically for
   <img src="https://img.shields.io/badge/Barcode_Scanner-Supported-purple" alt="Barcode Scanner"/>
 </p>
 
+<p align="center">
+  <a href="https://optical-shop-pos.onrender.com" target="_blank">
+    <img src="https://img.shields.io/badge/🚀%20Live%20Demo-optical--shop--pos.onrender.com-4F46E5?style=for-the-badge&logoColor=white" alt="Live Demo"/>
+  </a>
+</p>
+
 > **This is an online web application.** It runs on a Node.js server and is accessed through a browser. It is not a desktop app, Electron app, or offline-first PWA. An internet connection or local network access to the server is required.
 
 ---
