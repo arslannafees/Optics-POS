@@ -16,18 +16,47 @@
 
 <br/><br/>
 
+**Tech Stack**
+
 <img src="https://img.shields.io/badge/Next.js-16.1-000000?style=flat-square&logo=nextdotjs&logoColor=white" alt="Next.js"/>
 <img src="https://img.shields.io/badge/React-19.1-20232A?style=flat-square&logo=react&logoColor=61DAFB" alt="React"/>
+<img src="https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=nodedotjs&logoColor=white" alt="Node.js"/>
 <img src="https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white" alt="SQLite"/>
 <img src="https://img.shields.io/badge/TailwindCSS-4.0-0F172A?style=flat-square&logo=tailwindcss&logoColor=38BDF8" alt="TailwindCSS"/>
-<img src="https://img.shields.io/badge/License-Private-DC2626?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License"/>
+<img src="https://img.shields.io/badge/shadcn%2Fui-000000?style=flat-square&logo=shadcnui&logoColor=white" alt="shadcn/ui"/>
+<img src="https://img.shields.io/badge/Radix%20UI-161618?style=flat-square&logo=radixui&logoColor=white" alt="Radix UI"/>
+<img src="https://img.shields.io/badge/Framer%20Motion-0055FF?style=flat-square&logo=framer&logoColor=white" alt="Framer Motion"/>
 
 <br/>
+
+**Libraries & Tools**
+
+<img src="https://img.shields.io/badge/SWR-Data%20Fetching-000000?style=flat-square&logo=vercel&logoColor=white" alt="SWR"/>
+<img src="https://img.shields.io/badge/Recharts-Charts-22C55E?style=flat-square&logo=chartdotjs&logoColor=white" alt="Recharts"/>
+<img src="https://img.shields.io/badge/TanStack%20Table-FF4154?style=flat-square&logo=reacttable&logoColor=white" alt="TanStack Table"/>
+<img src="https://img.shields.io/badge/Lucide-Icons-F97316?style=flat-square&logo=lucide&logoColor=white" alt="Lucide"/>
+<img src="https://img.shields.io/badge/jsPDF-Invoice%20Gen-E74C3C?style=flat-square&logo=adobeacrobatreader&logoColor=white" alt="jsPDF"/>
+<img src="https://img.shields.io/badge/xlsx-Excel%20Export-217346?style=flat-square&logo=microsoftexcel&logoColor=white" alt="xlsx"/>
+<img src="https://img.shields.io/badge/date--fns-770C56?style=flat-square&logo=date-fns&logoColor=white" alt="date-fns"/>
+<img src="https://img.shields.io/badge/JWT-Auth-000000?style=flat-square&logo=jsonwebtokens&logoColor=FB015B" alt="JWT"/>
+<img src="https://img.shields.io/badge/bcrypt-Password%20Hash-6D28D9?style=flat-square&logo=letsencrypt&logoColor=white" alt="bcrypt"/>
+
+<br/>
+
+**Features**
 
 <img src="https://img.shields.io/badge/Web%20App-Online-16A34A?style=flat-square&logo=googlechrome&logoColor=white" alt="Web App"/>
 <img src="https://img.shields.io/badge/Multi--Tenant-Supported-2563EB?style=flat-square&logo=cloudflare&logoColor=white" alt="Multi-Tenant"/>
 <img src="https://img.shields.io/badge/Thermal%20Printing-80mm-EA580C?style=flat-square&logo=epson&logoColor=white" alt="Thermal Printing"/>
 <img src="https://img.shields.io/badge/Barcode%20Scanner-Supported-7C3AED?style=flat-square&logo=qrcode&logoColor=white" alt="Barcode Scanner"/>
+<img src="https://img.shields.io/badge/Dark%20Mode-Supported-1E293B?style=flat-square&logo=halfmoon&logoColor=white" alt="Dark Mode"/>
+<img src="https://img.shields.io/badge/Role--Based%20Access-4%20Roles-0EA5E9?style=flat-square&logo=auth0&logoColor=white" alt="Role-Based Access"/>
+<img src="https://img.shields.io/badge/PDF%20Invoices-A4%20%26%2080mm-DC2626?style=flat-square&logo=adobeacrobatreader&logoColor=white" alt="PDF Invoices"/>
+<img src="https://img.shields.io/badge/Excel%20Export-Reports-217346?style=flat-square&logo=microsoftexcel&logoColor=white" alt="Excel Export"/>
+<img src="https://img.shields.io/badge/Audit%20Logs-Full%20Trail-6B7280?style=flat-square&logo=datadog&logoColor=white" alt="Audit Logs"/>
+<img src="https://img.shields.io/badge/Lens%20Fabrication-Portal-8B5CF6?style=flat-square&logo=microscope&logoColor=white" alt="Lens Fabrication"/>
+<img src="https://img.shields.io/badge/Prescription-Tracking-06B6D4?style=flat-square&logo=mysl&logoColor=white" alt="Prescription"/>
+<img src="https://img.shields.io/badge/License-Private-DC2626?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License"/>
 
 </div>
 
