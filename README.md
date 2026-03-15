@@ -32,8 +32,7 @@
 </div>
 
 <br/>
-> [!NOTE]
-> **This is an online web application.** It runs on a Node.js server and is accessed through a browser. It is not a desktop app, Electron app, or offline-first PWA. An internet connection or local network access to the server is required.
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0f0c29,50:302b63,100:24243e&height=80&text=🌐%20This%20is%20an%20Online%20Web%20Application&fontSize=18&fontColor=a5b4fc&desc=Runs%20on%20a%20Node.js%20server%20·%20Accessed%20via%20browser%20·%20Not%20a%20desktop%20app%2C%20Electron%20app%2C%20or%20PWA&descSize=13&descColor=c4b5fd&fontAlignY=38&descAlignY=65" width="100%"/>
 
 ---
 
