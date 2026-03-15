@@ -18,7 +18,13 @@ A modern, full-featured **Point of Sale (POS) system** designed specifically for
 
 <p align="center">
   <a href="https://optical-shop-pos.onrender.com" target="_blank">
-    <img src="https://img.shields.io/badge/🚀%20Live%20Demo-optical--shop--pos.onrender.com-4F46E5?style=for-the-badge&logoColor=white" alt="Live Demo"/>
+    <img src="https://readme-typing-svg.demolab.com?font=Inter&weight=700&size=20&pause=1000&color=4F46E5&center=true&vCenter=true&width=435&lines=🚀+View+Live+Demo;optical-shop-pos.onrender.com" alt="Live Demo" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://optical-shop-pos.onrender.com" target="_blank">
+    <img src="https://img.shields.io/badge/-%F0%9F%9A%80%20Open%20Live%20Demo-4F46E5?style=for-the-badge&labelColor=0F0F23&color=4F46E5&logoColor=white" height="48" alt="Open Live Demo"/>
   </a>
 </p>
 
