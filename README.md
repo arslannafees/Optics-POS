@@ -1,33 +1,35 @@
-# 👓 Optics POS
+<div align="center">
 
-A modern, full-featured **Point of Sale (POS) system** designed specifically for optical retail shops. Built with Next.js and React 19, this web application streamlines inventory management, sales tracking, customer management, and comprehensive reporting for eyewear businesses.
+<img src="https://capsule-render.vercel.app/api?type=venom&color=gradient&customColorList=6,11,20&height=200&text=Optics%20POS&fontSize=72&fontColor=fff&animation=twinkling&fontAlignY=55&desc=Modern%20Optical%20Shop%20Management%20System&descSize=16&descAlignY=78&descColor=ffffff" width="100%"/>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Next.js-16.1-black?logo=next.js" alt="Next.js"/>
-  <img src="https://img.shields.io/badge/React-19.1-blue?logo=react" alt="React"/>
-  <img src="https://img.shields.io/badge/SQLite-Database-green?logo=sqlite" alt="SQLite"/>
-  <img src="https://img.shields.io/badge/TailwindCSS-4.0-38B2AC?logo=tailwind-css" alt="TailwindCSS"/>
-  <img src="https://img.shields.io/badge/License-Private-red" alt="License"/>
-</p>
-<p align="center">
-  <img src="https://img.shields.io/badge/Web_App-Online-brightgreen" alt="Web App"/>
-  <img src="https://img.shields.io/badge/Multi--Tenant-Supported-blue" alt="Multi-Tenant"/>
-  <img src="https://img.shields.io/badge/Thermal_Printing-80mm-orange" alt="Thermal Printing"/>
-  <img src="https://img.shields.io/badge/Barcode_Scanner-Supported-purple" alt="Barcode Scanner"/>
-</p>
+<br/>
 
-<p align="center">
-  <a href="https://optical-shop-pos.onrender.com" target="_blank">
-    <img src="https://readme-typing-svg.demolab.com?font=Inter&weight=700&size=20&pause=1000&color=4F46E5&center=true&vCenter=true&width=435&lines=🚀+View+Live+Demo;optical-shop-pos.onrender.com" alt="Live Demo" />
-  </a>
-</p>
+<img src="https://readme-typing-svg.demolab.com?font=Inter&weight=600&size=16&duration=2500&pause=800&color=A78BFA&center=true&vCenter=true&width=600&lines=📦+Inventory+Management;🧾+Orders+%26+Invoices;👁️+Prescription+Tracking;🔬+Lens+Fabrication+Portal;📊+Reports+%26+Analytics;🔖+Barcode+Scanner+Support" alt="Features" />
 
-<p align="center">
-  <a href="https://optical-shop-pos.onrender.com" target="_blank">
-    <img src="https://img.shields.io/badge/-%F0%9F%9A%80%20Open%20Live%20Demo-4F46E5?style=for-the-badge&labelColor=0F0F23&color=4F46E5&logoColor=white" height="48" alt="Open Live Demo"/>
-  </a>
-</p>
+<br/><br/>
 
+<a href="https://optical-shop-pos.onrender.com" target="_blank">
+  <img src="https://raw.githubusercontent.com/arslannafees/Optical-Shop-POS/main/public/demo-button.svg" alt="View Live Demo" width="320" height="72"/>
+</a>
+
+<br/><br/>
+
+<img src="https://img.shields.io/badge/Next.js-16.1-black?style=flat-square&logo=next.js" alt="Next.js"/>
+<img src="https://img.shields.io/badge/React-19.1-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React"/>
+<img src="https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white" alt="SQLite"/>
+<img src="https://img.shields.io/badge/TailwindCSS-4.0-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white" alt="TailwindCSS"/>
+<img src="https://img.shields.io/badge/License-Private-red?style=flat-square" alt="License"/>
+
+<br/>
+
+<img src="https://img.shields.io/badge/Web%20App-Online-22c55e?style=flat-square" alt="Web App"/>
+<img src="https://img.shields.io/badge/Multi--Tenant-Supported-3b82f6?style=flat-square" alt="Multi-Tenant"/>
+<img src="https://img.shields.io/badge/Thermal%20Printing-80mm-f97316?style=flat-square" alt="Thermal Printing"/>
+<img src="https://img.shields.io/badge/Barcode%20Scanner-Supported-a855f7?style=flat-square" alt="Barcode Scanner"/>
+
+</div>
+
+<br/>
 > **This is an online web application.** It runs on a Node.js server and is accessed through a browser. It is not a desktop app, Electron app, or offline-first PWA. An internet connection or local network access to the server is required.
 
 ---
