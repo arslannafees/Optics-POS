@@ -716,8 +716,7 @@ This is a private project. For any inquiries, please contact the project maintai
 
    👤 Name: Arslan Nafees<br>
    📱 Phone: +92 334 111 3047
-   
-📧 Email: arslannafees807@gmail.com
+   📧 Email: arslannafees807@gmail.com
 
 [![GitHub](https://img.shields.io/badge/GitHub-arslannafees-181717?style=flat&logo=github)](https://github.com/arslannafees)
 
