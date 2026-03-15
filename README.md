@@ -9,27 +9,30 @@
 <br/><br/>
 
 <a href="https://optical-shop-pos.onrender.com" target="_blank">
-  <img src="https://raw.githubusercontent.com/arslannafees/Optical-Shop-POS/main/public/demo-button.svg" alt="View Live Demo" width="320" height="72"/>
+  <img src="https://capsule-render.vercel.app/api?type=rect&color=gradient&customColorList=6,11,20&height=60&text=🚀%20View%20Live%20Demo&fontSize=22&fontColor=fff&animation=twinkling&width=320" alt="View Live Demo"/>
 </a>
+
+<sub><a href="https://optical-shop-pos.onrender.com">optical-shop-pos.onrender.com</a></sub>
 
 <br/><br/>
 
-<img src="https://img.shields.io/badge/Next.js-16.1-black?style=flat-square&logo=next.js" alt="Next.js"/>
-<img src="https://img.shields.io/badge/React-19.1-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React"/>
+<img src="https://img.shields.io/badge/Next.js-16.1-000000?style=flat-square&logo=nextdotjs&logoColor=white" alt="Next.js"/>
+<img src="https://img.shields.io/badge/React-19.1-20232A?style=flat-square&logo=react&logoColor=61DAFB" alt="React"/>
 <img src="https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white" alt="SQLite"/>
-<img src="https://img.shields.io/badge/TailwindCSS-4.0-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white" alt="TailwindCSS"/>
-<img src="https://img.shields.io/badge/License-Private-red?style=flat-square" alt="License"/>
+<img src="https://img.shields.io/badge/TailwindCSS-4.0-0F172A?style=flat-square&logo=tailwindcss&logoColor=38BDF8" alt="TailwindCSS"/>
+<img src="https://img.shields.io/badge/License-Private-DC2626?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License"/>
 
 <br/>
 
-<img src="https://img.shields.io/badge/Web%20App-Online-22c55e?style=flat-square" alt="Web App"/>
-<img src="https://img.shields.io/badge/Multi--Tenant-Supported-3b82f6?style=flat-square" alt="Multi-Tenant"/>
-<img src="https://img.shields.io/badge/Thermal%20Printing-80mm-f97316?style=flat-square" alt="Thermal Printing"/>
-<img src="https://img.shields.io/badge/Barcode%20Scanner-Supported-a855f7?style=flat-square" alt="Barcode Scanner"/>
+<img src="https://img.shields.io/badge/Web%20App-Online-16A34A?style=flat-square&logo=googlechrome&logoColor=white" alt="Web App"/>
+<img src="https://img.shields.io/badge/Multi--Tenant-Supported-2563EB?style=flat-square&logo=cloudflare&logoColor=white" alt="Multi-Tenant"/>
+<img src="https://img.shields.io/badge/Thermal%20Printing-80mm-EA580C?style=flat-square&logo=epson&logoColor=white" alt="Thermal Printing"/>
+<img src="https://img.shields.io/badge/Barcode%20Scanner-Supported-7C3AED?style=flat-square&logo=qrcode&logoColor=white" alt="Barcode Scanner"/>
 
 </div>
 
 <br/>
+> [!NOTE]
 > **This is an online web application.** It runs on a Node.js server and is accessed through a browser. It is not a desktop app, Electron app, or offline-first PWA. An internet connection or local network access to the server is required.
 
 ---
