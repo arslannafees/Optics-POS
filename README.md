@@ -226,15 +226,6 @@ A modern, full-featured **Point of Sale (POS) system** designed specifically for
 
 > The app runs as a **web server**. Keep the terminal running while using the app. Other devices on the same network can also access it via your machine's IP address and port 3000.
 
-### Default Login Credentials
-
-| Role | Email | Password |
-|------|-------|----------|
-| **Admin** | `admin@optics.com` | `admin123` |
-| **Super Admin** | `superadmin@optics.com` | `admin123` |
-
-> ⚠️ **Important:** Change these default credentials after first login for security.
-
 ### Available Scripts
 
 | Command | Description |
