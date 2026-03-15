@@ -41,5 +41,36 @@ export function useOrderMutations(setFormData, lists) {
         }));
     }, [setFormData, lists]);
 
-    return { handleAddItem, handleRemoveItem, handleItemChange };
+    const handleAddScannedItem = useCallback((type, product) => {
+        setFormData(prev => {
+            const productId = product.id.toString();
+            const existing = prev.items.find(i => i.type === type && i.itemId === productId);
+            if (existing) {
+                // Already in order — bump quantity
+                return {
+                    ...prev,
+                    items: prev.items.map(i =>
+                        i.id === existing.id
+                            ? { ...i, quantity: String((parseInt(i.quantity) || 1) + 1) }
+                            : i
+                    )
+                };
+            }
+            return {
+                ...prev,
+                items: [...prev.items, {
+                    id: Date.now(),
+                    type,
+                    itemId: productId,
+                    name: product.name || `${product.brand || ""} ${product.model || ""}`.trim(),
+                    brand: product.brand || "",
+                    color: product.color || "",
+                    price: product.price || "",
+                    quantity: "1",
+                }]
+            };
+        });
+    }, [setFormData]);
+
+    return { handleAddItem, handleRemoveItem, handleItemChange, handleAddScannedItem };
 }

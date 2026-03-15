@@ -18,6 +18,7 @@ export async function GET(req) {
                 b.name as brand,
                 a.cost,
                 a.price,
+                a.barcode,
                 a.stock,
                 a.remarks,
                 a.accessory_type,
@@ -65,6 +66,7 @@ export async function POST(req) {
             name,
             accessoryType,
             brandId,
+            barcode,
             cost,
             price,
             stock,
@@ -86,14 +88,15 @@ export async function POST(req) {
         const result = db
             .prepare(
                 `
-      INSERT INTO accessories (name, accessory_type, brand_id, cost, price, stock, remarks, branch_id, shop_id, active)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO accessories (name, accessory_type, brand_id, barcode, cost, price, stock, remarks, branch_id, shop_id, active)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `
             )
             .run(
                 name,
                 accessoryType || null,
                 brandId || null,
+                barcode || null,
                 parseFloat(cost) || 0,
                 parseFloat(price) || 0,
                 parseInt(stock) || 0,

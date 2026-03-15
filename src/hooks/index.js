@@ -23,3 +23,4 @@ export * from "./useLenses";
 export * from "./useShopsData";
 export * from "./useBranchesData";
 export * from "./useUserSync";
+export * from "./useBarcodeScanner";

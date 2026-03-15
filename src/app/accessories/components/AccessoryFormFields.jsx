@@ -74,6 +74,10 @@ export function AccessoryFormFields({ form, onChange, onSelectChange }) {
             </div>
             <AccessoryPricingFields form={form} onChange={onChange} />
             <div className="space-y-2">
+                <Label htmlFor="barcode">Barcode</Label>
+                <Input id="barcode" name="barcode" value={form.barcode || ""} onChange={onChange} placeholder="Scan or enter barcode" />
+            </div>
+            <div className="space-y-2">
                 <Label htmlFor="remarks">Remarks</Label>
                 <Textarea id="remarks" name="remarks" value={form.remarks} onChange={onChange} placeholder="Notes" />
             </div>

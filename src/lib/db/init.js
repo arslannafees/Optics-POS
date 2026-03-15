@@ -9,7 +9,7 @@ import { initIndexes } from './schema/indexes';
 import { initFabrication } from './schema/fabrication';
 import { seedData } from './schema/seed';
 
-const CURRENT_VERSION = 14;
+const CURRENT_VERSION = 15;
 
 export function initialize() {
     if (global._sqliteInitialized) return db;
@@ -63,6 +63,18 @@ export function initialize() {
         }
 
         // initCore must run before seedData so the shops table exists when seeded
+        // v15: add barcode column to lenses, contact_lenses, accessories
+        if (dbVersion >= 14) {
+            const lensCols = db.prepare("PRAGMA table_info(lenses)").all().map(c => c.name);
+            if (!lensCols.includes('barcode')) db.exec("ALTER TABLE lenses ADD COLUMN barcode TEXT");
+
+            const clCols = db.prepare("PRAGMA table_info(contact_lenses)").all().map(c => c.name);
+            if (!clCols.includes('barcode')) db.exec("ALTER TABLE contact_lenses ADD COLUMN barcode TEXT");
+
+            const accCols = db.prepare("PRAGMA table_info(accessories)").all().map(c => c.name);
+            if (!accCols.includes('barcode')) db.exec("ALTER TABLE accessories ADD COLUMN barcode TEXT");
+        }
+
         initCore(db, 1);
         const defaultShopId = seedData(db);
         initInventory(db, defaultShopId);

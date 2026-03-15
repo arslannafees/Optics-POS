@@ -34,6 +34,11 @@ export function initInventory(db, defaultShopId) {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
 
+  const lensCols = db.prepare("PRAGMA table_info(lenses)").all().map(c => c.name);
+  if (!lensCols.includes('barcode')) {
+    db.exec("ALTER TABLE lenses ADD COLUMN barcode TEXT");
+  }
+
   db.exec(`CREATE TABLE IF NOT EXISTS contact_lenses(
     id INTEGER PRIMARY KEY AUTOINCREMENT, brand_id INTEGER REFERENCES brands(id) ON DELETE CASCADE,
     brand_name TEXT, name TEXT NOT NULL, type TEXT, replacement_schedule TEXT, base_curve TEXT,
@@ -44,10 +49,20 @@ export function initInventory(db, defaultShopId) {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
 
+  const clCols = db.prepare("PRAGMA table_info(contact_lenses)").all().map(c => c.name);
+  if (!clCols.includes('barcode')) {
+    db.exec("ALTER TABLE contact_lenses ADD COLUMN barcode TEXT");
+  }
+
   db.exec(`CREATE TABLE IF NOT EXISTS accessories(
     id INTEGER PRIMARY KEY AUTOINCREMENT, brand_id INTEGER REFERENCES brands(id) ON DELETE CASCADE,
     name TEXT NOT NULL, accessory_type TEXT, cost REAL DEFAULT 0, price REAL DEFAULT 0, stock INTEGER DEFAULT 0,
     remarks TEXT, active INTEGER DEFAULT 1, shop_id INTEGER REFERENCES shops(id), branch_id INTEGER DEFAULT 1,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
+
+  const accCols = db.prepare("PRAGMA table_info(accessories)").all().map(c => c.name);
+  if (!accCols.includes('barcode')) {
+    db.exec("ALTER TABLE accessories ADD COLUMN barcode TEXT");
+  }
 }

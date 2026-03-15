@@ -264,6 +264,17 @@ export function FrameAddEditSheet({ open, setOpen, isEditing, form, setForm, onS
                                 />
                             </div>
 
+                            {/* Barcode */}
+                            <div className="md:col-span-2 space-y-1.5">
+                                <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Barcode</Label>
+                                <Input
+                                    className="h-9"
+                                    placeholder="Scan or enter barcode"
+                                    value={form.barcode || ""}
+                                    onChange={e => update({ barcode: e.target.value })}
+                                />
+                            </div>
+
                             {/* Remarks (Full width) */}
                             <div className="md:col-span-2 space-y-1.5">
                                 <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Remarks</Label>

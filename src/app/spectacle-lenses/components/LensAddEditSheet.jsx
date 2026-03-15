@@ -188,6 +188,11 @@ export function LensAddEditSheet({ open, setOpen, isEditing, formData, setFormDa
                                 <Input className="h-9" type="number" placeholder="0" value={formData.stock || ""} onChange={e => update({ stock: e.target.value })} />
                             </div>
 
+                            <div className="space-y-1.5">
+                                <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Barcode</Label>
+                                <Input className="h-9" placeholder="Scan or enter barcode" value={formData.barcode || ""} onChange={e => update({ barcode: e.target.value })} />
+                            </div>
+
                             <div className="flex items-center space-x-2 pt-6">
                                 <Switch id="active-status" checked={formData.active !== false} onCheckedChange={c => update({ active: c })} />
                                 <Label htmlFor="active-status" className="text-xs font-semibold uppercase">Active</Label>

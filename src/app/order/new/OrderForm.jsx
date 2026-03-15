@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useBranch } from "@/contexts/BranchContext";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -8,6 +8,28 @@ import * as hooks from "@/hooks";
 import * as api from "@/lib/order-api";
 import { NewOrderHeader, CustomerInformation, OrderItems, PrescriptionSection, SummaryDetails, PaymentFields } from "./components";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
+
+function playScanSound(type) {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        gain.gain.value = 0.08;
+        if (type === "success") {
+            osc.type = "sine"; osc.frequency.value = 1800;
+            osc.start(); osc.stop(ctx.currentTime + 0.08);
+        } else if (type === "increment") {
+            osc.type = "sine"; osc.frequency.value = 1200;
+            osc.start(); osc.stop(ctx.currentTime + 0.06);
+        } else {
+            osc.type = "sawtooth"; osc.frequency.value = 280;
+            osc.start(); osc.stop(ctx.currentTime + 0.2);
+        }
+    } catch { /* AudioContext unavailable */ }
+}
 
 export function OrderForm() {
     const router = useRouter(); const searchParams = useSearchParams();
@@ -17,6 +39,41 @@ export function OrderForm() {
     const lists = hooks.useOrderData(currentShop, currentBranch, st.setFormData, editId, initCustId);
     const actions = hooks.useOrderMutations(st.setFormData, lists);
     hooks.useOrderCalculations(st.formData, st.setFormData, settings);
+
+    const handleBarcodeScan = useCallback((barcode) => {
+        const allItems = [
+            ...lists.frames.map(p => ({ ...p, _type: "frame" })),
+            ...lists.lenses.map(p => ({ ...p, _type: "lens" })),
+            ...lists.contactLenses.map(p => ({ ...p, _type: "contact-lens" })),
+            ...lists.accessories.map(p => ({ ...p, _type: "accessory" })),
+        ];
+        const found = allItems.find(p => p.barcode && p.barcode === barcode);
+        if (!found) {
+            playScanSound("error");
+            toast.error(`No product found for barcode: ${barcode}`);
+            return;
+        }
+
+        const { _type, ...product } = found;
+        const productId = product.id.toString();
+        const alreadyInOrder = st.formData.items.find(i => i.type === _type && i.itemId === productId);
+        actions.handleAddScannedItem(_type, product);
+
+        if (alreadyInOrder) {
+            playScanSound("increment");
+            toast.success(`Qty updated: ${found.name || found.brand || barcode}`);
+        } else {
+            playScanSound("success");
+            const label = found.name || `${found.brand || ""} ${found.model || ""}`.trim() || barcode;
+            if ((found.stock ?? 1) <= 0) {
+                toast.warning(`Added (out of stock): ${label}`);
+            } else {
+                toast.success(`Added: ${label}`);
+            }
+        }
+    }, [lists, actions, st.formData.items]);
+
+    hooks.useBarcodeScanner(handleBarcodeScan);
 
     useEffect(() => { if (editId) api.fetchOrderForEdit(editId, st.setFormData); }, [editId]);
     useEffect(() => { if (initCustId) st.setFormData(p => ({ ...p, customerId: initCustId })); }, [initCustId]);
@@ -45,7 +102,7 @@ export function OrderForm() {
             <div className="grid gap-6 lg:grid-cols-3">
                 <div className="lg:col-span-2 space-y-6">
                     <CustomerInformation state={st} lists={lists} settings={settings} isEyeCheckupOnly={isEC} />
-                    <OrderItems state={{ ...st, ...btns }} lists={lists} settings={settings} actions={actions} dragActions={dActions} />
+                    <OrderItems state={{ ...st, ...btns }} lists={lists} settings={settings} actions={actions} dragActions={dActions} onBarcodeScan={handleBarcodeScan} />
                     <PrescriptionSection formData={st.formData} setFormData={st.setFormData} settings={settings} onLoadLatest={() => api.fetchLatestRx(st.formData.customerId, st.setFormData)} />
                 </div>
                 <Card className="border shadow-none sticky top-4">

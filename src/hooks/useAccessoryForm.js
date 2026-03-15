@@ -3,8 +3,8 @@
 import { useState } from "react";
 
 const initialFormState = {
-    name: "", accessoryType: "", brandId: "", cost: "",
-    price: "", stock: "", remarks: "", active: true,
+    name: "", accessoryType: "", brandId: "", barcode: "",
+    cost: "", price: "", stock: "", remarks: "", active: true,
 };
 
 export function useAccessoryForm() {
@@ -26,6 +26,7 @@ export function useAccessoryForm() {
             name: acc.name || "",
             accessoryType: acc.accessory_type || "",
             brandId: acc.brand_id?.toString() || "",
+            barcode: acc.barcode || "",
             cost: acc.cost || "", price: acc.price || "",
             stock: acc.stock || "", remarks: acc.remarks || "",
             active: acc.active ?? true,

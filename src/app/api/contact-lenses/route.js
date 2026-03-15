@@ -34,6 +34,7 @@ export async function GET(req) {
         cl.color,
         cost,
         price,
+        cl.barcode,
         stock,
         remarks,
         cl.active,
@@ -84,7 +85,7 @@ export async function POST(req) {
             brand, name, type, replacementSchedule, baseCurve,
             diameter, waterContent, material, sph, cyl, axis,
             addPower, dominance, uvProtection, oxygenPermeability,
-            eyeSide, expiryDate, color, cost, price,
+            eyeSide, expiryDate, color, barcode, cost, price,
             stock, remarks, active = true, branchId, shopId, user
         } = body;
 
@@ -98,13 +99,13 @@ export async function POST(req) {
         const db = getDb();
         const result = db.prepare(`
       INSERT INTO contact_lenses (
-        brand_name, name, type, replacement_schedule, base_curve, 
-        diameter, water_content, material, sph, cyl, axis, 
-        add_power, dominance, uv_protection, oxygen_permeability, 
-        eye_side, expiry_date, color, cost, price, 
+        brand_name, name, type, replacement_schedule, base_curve,
+        diameter, water_content, material, sph, cyl, axis,
+        add_power, dominance, uv_protection, oxygen_permeability,
+        eye_side, expiry_date, color, barcode, cost, price,
         stock, remarks, active, branch_id, shop_id
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
             brand || null,
             name,
@@ -124,6 +125,7 @@ export async function POST(req) {
             eyeSide || null,
             expiryDate || null,
             color || null,
+            barcode || null,
             parseFloat(cost) || 0,
             parseFloat(price) || 0,
             parseInt(stock) || 0,
@@ -154,6 +156,7 @@ export async function POST(req) {
         eye_side as eyeSide,
         expiry_date as expiryDate,
         color,
+        barcode,
         cost,
         price,
         stock,
@@ -162,7 +165,7 @@ export async function POST(req) {
         created_at as createdAt,
         shop_id as shopId,
         branch_id as branchId
-      FROM contact_lenses 
+      FROM contact_lenses
       WHERE id = ?
     `).get(result.lastInsertRowid);
 

@@ -21,6 +21,7 @@ export async function GET(req) {
         coating,
         cost,
         price,
+        barcode,
         stock,
         remarks,
         lenses.active,
@@ -67,7 +68,7 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { brand, name, type, material, coating, cost, price, stock, remarks, active = true, branchId, shopId, user } = body;
+    const { brand, name, type, material, coating, cost, price, barcode, stock, remarks, active = true, branchId, shopId, user } = body;
 
     if (!name || !shopId) {
       return NextResponse.json(
@@ -78,8 +79,8 @@ export async function POST(req) {
 
     const db = getDb();
     const result = db.prepare(`
-      INSERT INTO lenses (brand_name, name, type, material, coating, cost, price, stock, remarks, active, branch_id, shop_id)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO lenses (brand_name, name, type, material, coating, cost, price, barcode, stock, remarks, active, branch_id, shop_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       brand || null,
       name,
@@ -88,6 +89,7 @@ export async function POST(req) {
       coating || null,
       parseFloat(cost) || 0,
       parseFloat(price) || 0,
+      barcode || null,
       parseInt(stock) || 0,
       remarks || null,
       active ? 1 : 0,
@@ -105,13 +107,14 @@ export async function POST(req) {
         coating,
         cost,
         price,
+        barcode,
         stock,
         remarks,
         active,
         created_at as createdAt,
         shop_id as shopId,
         branch_id as branchId
-      FROM lenses 
+      FROM lenses
       WHERE id = ?
     `).get(result.lastInsertRowid);
 
