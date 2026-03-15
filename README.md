@@ -1,19 +1,22 @@
 # 👓 Optics POS
 
-A modern, full-featured **Point of Sale (POS) system** designed specifically for optical retail shops. Built with Next.js 15 and React 19, this application streamlines inventory management, sales tracking, customer management, and comprehensive reporting for eyewear businesses.
+A modern, full-featured **Point of Sale (POS) system** designed specifically for optical retail shops. Built with Next.js and React 19, this web application streamlines inventory management, sales tracking, customer management, and comprehensive reporting for eyewear businesses.
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Next.js-15.5-black?logo=next.js" alt="Next.js"/>
+  <img src="https://img.shields.io/badge/Next.js-16.1-black?logo=next.js" alt="Next.js"/>
   <img src="https://img.shields.io/badge/React-19.1-blue?logo=react" alt="React"/>
   <img src="https://img.shields.io/badge/SQLite-Database-green?logo=sqlite" alt="SQLite"/>
   <img src="https://img.shields.io/badge/TailwindCSS-4.0-38B2AC?logo=tailwind-css" alt="TailwindCSS"/>
   <img src="https://img.shields.io/badge/License-Private-red" alt="License"/>
 </p>
 <p align="center">
-  <img src="https://img.shields.io/badge/Offline-Ready-brightgreen" alt="Offline Ready"/>
+  <img src="https://img.shields.io/badge/Web_App-Online-brightgreen" alt="Web App"/>
   <img src="https://img.shields.io/badge/Multi--Tenant-Supported-blue" alt="Multi-Tenant"/>
   <img src="https://img.shields.io/badge/Thermal_Printing-80mm-orange" alt="Thermal Printing"/>
+  <img src="https://img.shields.io/badge/Barcode_Scanner-Supported-purple" alt="Barcode Scanner"/>
 </p>
+
+> **This is an online web application.** It runs on a Node.js server and is accessed through a browser. It is not a desktop app, Electron app, or offline-first PWA. An internet connection or local network access to the server is required.
 
 ---
 
@@ -46,6 +49,7 @@ A modern, full-featured **Point of Sale (POS) system** designed specifically for
 | **Contact Lenses** | Full contact lens management with SPH, CYL, AXIS, base curve, diameter, water content, UV protection, and expiry tracking |
 | **Accessories** | Manage optical accessories and supplies with categorization |
 | **Brands** | Organize products by brand with type classification (Frame, Lens, Accessory, Service, Glass, Sunglasses, Contact Lens) |
+| **Barcode Support** | All inventory items (frames, lenses, contact lenses, accessories) support barcode fields for scanner integration |
 | **Stock Tracking** | Real-time inventory levels with configurable low-stock alerts on dashboard |
 | **Opening Balance** | Track initial stock quantities for accurate reporting |
 | **Stock In Hand** | Dedicated report for current inventory status with tabbed view (Frames, Lenses, Contact Lens, Accessories) |
@@ -55,6 +59,7 @@ A modern, full-featured **Point of Sale (POS) system** designed specifically for
 ### 💰 Sales & Orders
 
 - **New Orders** - Create sales orders with multiple items (frames, lenses, accessories, services, eye checkups)
+- **Barcode Scanner Integration** - Scan any product barcode on the order page to instantly add it to the order — no clicking required. Hardware USB/Bluetooth scanners are supported out of the box. Plays audio feedback (success, duplicate, error) and shows toast notifications
 - **Prescription Support** - Full OD/OS prescription entry:
   - SPH, CYL, AXIS, ADD, PRISM
   - Pupillary Distance (PD) - Single or Dual mode
@@ -219,6 +224,8 @@ A modern, full-featured **Point of Sale (POS) system** designed specifically for
 4. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
+> The app runs as a **web server**. Keep the terminal running while using the app. Other devices on the same network can also access it via your machine's IP address and port 3000.
+
 ### Default Login Credentials
 
 | Role | Email | Password |
@@ -232,7 +239,7 @@ A modern, full-featured **Point of Sale (POS) system** designed specifically for
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start development server with Turbopack (fast refresh) |
+| `npm run dev` | Start development server |
 | `npm run build` | Build for production |
 | `npm start` | Start production server |
 | `npm run lint` | Run ESLint for code quality |
@@ -317,8 +324,10 @@ optics-pos/
 │   │   ├── BranchContext.js         # Shop/Branch selection & multi-tenancy
 │   │   └── SettingsContext.js       # App settings state
 │   │
-│   ├── 📂 hooks/                    # Custom React hooks
-│   │   └── use-mobile.js            # Mobile breakpoint detection
+│   ├── 📂 hooks/                    # Custom React hooks (47 total)
+│   │   ├── useBarcodeScanner.js     # Hardware barcode scanner input detection
+│   │   ├── useOrderMutations.js     # Order item add/remove/scan logic
+│   │   └── ...                      # Order, inventory, report, admin hooks
 │   │
 │   └── 📂 lib/                      # Utilities & database
 │       ├── db.js                    # SQLite database schema & connection
@@ -328,7 +337,7 @@ optics-pos/
 │       └── utils.js                 # Helper functions (cn, formatDate)
 │
 ├── 📂 data/                         # SQLite database storage
-│   └── optics.db                    # Main database (auto-created)
+│   └── optics.db                    # Main database (auto-created on first run)
 │
 ├── 📂 public/                       # Static assets
 │   └── Images/
@@ -345,7 +354,7 @@ optics-pos/
 
 ## 🗄️ Database Schema
 
-The application uses **SQLite** (via better-sqlite3) with **18 tables** for complete data management. The database is automatically created on first run with all migrations applied. The database file is stored **outside the application folder** so it survives app updates and reinstalls.
+The application uses **SQLite** (via better-sqlite3) with **18 tables** for complete data management. The database is automatically created on first run with all migrations applied.
 
 ### Core Tables
 
@@ -363,9 +372,9 @@ The application uses **SQLite** (via better-sqlite3) with **18 tables** for comp
 |-------|---------|------------|
 | `brands` | Product brands | id, name, type, shop_id, branch_id |
 | `frames` | Eyeglass frames | id, brand_id, model, category, size, color, cost, price, stock, barcode |
-| `lenses` | Spectacle lenses | id, brand_id, name, type, material, coating, cost, price, stock |
-| `contact_lenses` | Contact lenses | id, brand_id, name, type, base_curve, diameter, sph, cyl, axis, expiry_date |
-| `accessories` | Optical accessories | id, brand_id, name, accessory_type, cost, price, stock |
+| `lenses` | Spectacle lenses | id, brand_id, name, type, material, coating, cost, price, stock, barcode |
+| `contact_lenses` | Contact lenses | id, brand_id, name, type, base_curve, diameter, sph, cyl, axis, expiry_date, barcode |
+| `accessories` | Optical accessories | id, brand_id, name, accessory_type, cost, price, stock, barcode |
 | `vendors` | Supplier records | id, shop_id, name, company, contact_person, phone, balance |
 
 ### Transaction Tables
@@ -401,10 +410,10 @@ Order and purchase items support the following types:
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| **Next.js** | 15.5.9 | React framework with App Router & Turbopack |
+| **Next.js** | 16.1.6 | React framework with App Router |
 | **React** | 19.1.0 | UI library with latest concurrent features |
 | **TailwindCSS** | 4.0 | Utility-first CSS framework |
-| **SQLite** | better-sqlite3 12.5 | Embedded local database (offline-capable) |
+| **SQLite** | better-sqlite3 12.5 | Embedded database via Node.js server |
 
 ### UI Components
 
@@ -559,7 +568,7 @@ Settings are stored in the `settings` table with the following keys:
 
 ### Environment
 
-The application runs entirely locally and does not require environment variables. All data is stored in `data/optics.db`.
+No environment variables are required. The app connects to a local SQLite database at `data/optics.db` which is auto-created on first run.
 
 ---
 
@@ -668,10 +677,11 @@ This is a private project. For any inquiries, please contact the project maintai
 
 ## 📞 Contact
 
-   👤 Name: Arslan Nafees<br> 
-   📱 Phone: +92 334 111 3047  
-📧 Email: arslannafees807@gmail.com  
+   👤 Name: Arslan Nafees<br>
+   📱 Phone: +92 334 111 3047
+📧 Email: arslannafees807@gmail.com
 [![GitHub](https://img.shields.io/badge/GitHub-arslannafees-181717?style=flat&logo=github)](https://github.com/arslannafees)
+
 ---
 
 ## 📄 License
