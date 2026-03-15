@@ -4,7 +4,7 @@
 
 <br/>
 
-<img src="https://readme-typing-svg.demolab.com?font=Inter&weight=600&size=16&duration=2500&pause=800&color=A78BFA&center=true&vCenter=true&width=600&lines=📦+Inventory+Management;🧾+Orders+%26+Invoices;👁️+Prescription+Tracking;🔬+Lens+Fabrication+Portal;📊+Reports+%26+Analytics;🔖+Barcode+Scanner+Support" alt="Features" />
+<img src="https://readme-typing-svg.demolab.com?font=Inter&weight=600&size=16&duration=2500&pause=800&color=A78BFA&center=true&vCenter=true&width=600&lines=%F0%9F%93%A6+Inventory+Management;%F0%9F%A7%BE+Orders+%26+Invoices;%F0%9F%91%81+Prescription+Tracking;%F0%9F%94%AC+Lens+Fabrication+Portal;%F0%9F%93%8A+Reports+%26+Analytics;%F0%9F%94%96+Barcode+Scanner+Support" alt="Features" />
 
 <br/><br/>
 
