@@ -15,10 +15,10 @@ export function seedData(db) {
     seedDefaultBranch(db, defaultShopId);
     const mainBranchId = db.prepare('SELECT id FROM branches WHERE shop_id = ? AND name = ?').get(defaultShopId, 'Main Branch')?.id || 1;
 
-    seedAdmin(db, 'owner@optics.com', 'Owner', defaultShopId, mainBranchId, 'owner', '$2b$10$roNwMySjCZjRD5dkL/x.X.o24J9vGrQkrJ/UaIE4y7VXH9uiQy7TW');
-    seedAdmin(db, 'superadmin@optics.com', 'Super Admin', null, null, 'superadmin', '$2b$10$DhLGHQ71zMigPcttF8ubLuTJzrME16o2E.Y.a4b.Mg1eYW3E7iREe');
+    seedAdmin(db, 'owner@optics.com', 'Owner', defaultShopId, mainBranchId, 'admin', '$2b$10$roNwMySjCZjRD5dkL/x.X.o24J9vGrQkrJ/UaIE4y7VXH9uiQy7TW');
+    seedAdmin(db, 'superadmin@optics.com', 'Super Admin', null, null, 'super-admin', '$2b$10$DhLGHQ71zMigPcttF8ubLuTJzrME16o2E.Y.a4b.Mg1eYW3E7iREe');
     seedAdmin(db, 'staff@optics.com', 'Staff', defaultShopId, mainBranchId, 'staff', '$2b$10$X8QvU6nsIP6P9UWQbXnf1u.6cRqTYnfbG4H7FYyPPf2x9n62zaf6u');
-    seedAdmin(db, 'lensfabricator@optics.com', 'Lens Fabricator', defaultShopId, mainBranchId, 'lens fabricator', '$2b$10$2Bl76LkNmeho/nXdDaP2T.wOFPmw8IgqNm/srGEXv2PX3qNjTavra');
+    seedAdmin(db, 'lensfabricator@optics.com', 'Lens Fabricator', defaultShopId, mainBranchId, 'lens-fabricator', '$2b$10$2Bl76LkNmeho/nXdDaP2T.wOFPmw8IgqNm/srGEXv2PX3qNjTavra');
     
     return defaultShopId;
 }
