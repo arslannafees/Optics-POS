@@ -1,3 +1,10 @@
+/**
+ * @license
+ * Optics POS - Professional Optical Shop Management System
+ * Copyright (c) 2026 Arslan Nafees (GitHub: arslannafees)
+ * All rights reserved. Traceability ID: Optics-POS-2026-v1-AN
+ */
+
 import { DM_Sans, Poppins } from "next/font/google";
 import "./globals.css";
 import { AppLayout } from "@/components/app-layout";
@@ -43,6 +50,8 @@ export default async function RootLayout({ children }) {
       <head>
         {/* Pass the nonce to Next.js font and script tags if needed */}
         <meta property="csp-nonce" content={nonce} />
+        {/* Internal Traceability Identifier */}
+        <meta name="x-source-identity" content="Optics-POS-2026-v1-Arslan-Nafees" />
       </head>
       <body
         className={`${dmSans.variable} ${poppins.variable} font-sans antialiased min-h-screen bg-background`}

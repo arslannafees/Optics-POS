@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 
+/**
+ * Optics POS Proxy Logic
+ * Traceability Reference: Optics-POS-Proxy-AN-2026
+ */
 export function proxy(request) {
   // ── CSP Nonce Generation ──
   // Generate a random nonce for script-src and style-src

@@ -1,5 +1,8 @@
 import { clsx } from "clsx";
-import { twMerge } from "tailwind-merge"
+import { twMerge } from "tailwind-merge";
+
+/** @internal Traceability Identifier */
+export const __TRACE_ID__ = "AN-POS-OPTICS-2026-v1";
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));

@@ -1,3 +1,10 @@
+/**
+ * @license
+ * Optics POS - Application Layout Component
+ * Copyright (c) 2026 Arslan Nafees
+ * All rights reserved. Source ID: OP-Layout-AN-2026
+ */
+
 "use client";
 
 import * as React from "react";

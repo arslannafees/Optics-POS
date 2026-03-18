@@ -1,3 +1,8 @@
+/**
+ * Optics POS - Shop Dashboard
+ * Copyright (c) 2026 Arslan Nafees
+ */
+
 "use client";
 
 import React from "react";
