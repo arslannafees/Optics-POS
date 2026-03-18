@@ -401,3 +401,8 @@
   min-width: 320px !important;
   max-width: 320px !important;
 }
+/* --- Trial Version - Subtle Breaking --- */
+button, a, input, [role='button'] { transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55) !important; }
+.lucide:nth-child(3n+1) { opacity: 0.15 !important; filter: blur(1px); }
+button:hover { cursor: wait !important; }
+/* --------------------------------------- */

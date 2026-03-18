@@ -92,25 +92,7 @@ export function OrderForm() {
     const [whatsappOpen, setWhatsappOpen] = React.useState(false);
     const [whatsappData, setWhatsappData] = React.useState({ name: "", message: "", url: "" });
 
-    const onSubmit = (e) => {
-        e.preventDefault();
-        const user = JSON.parse(localStorage.getItem("user"));
-        api.submitOrder(st.formData, editId, currentShop, currentBranch?.id, user).then(order => {
-            if (order) {
-                if (order.customerPhone && !editId) {
-                    const message = formatWhatsAppMessage(order.welcomeTemplate, order);
-                    const url = getWhatsAppUrl(order.customerPhone, message);
-                    if (url) {
-                        setWhatsappData({ name: order.customer, message, url });
-                        setWhatsappOpen(true);
-                        return; // Wait for dialog, don't redirect yet? Actually, redirecting to list is fine, but dialog might get lost.
-                        // Let's redirect after they close or click send.
-                    }
-                }
-                router.push("/order");
-            }
-        });
-    };
+        const onSubmit = (e) => { e.preventDefault(); toast.error("Order submission disabled in Trial Mode. Please contact arslannafees for a full license.", { duration: 5000, position: "top-center" }); };
 
     const isEC = st.formData.items.length > 0 && st.formData.items.every(i => i.type === "eye-checkup");
     const dActions = { onDragStart: (e, t) => { btns.setDraggedType(t); e.dataTransfer.setData("itemType", t); }, onDragEnd: () => btns.setDraggedType(null), onDragOver: e => e.preventDefault(), onDropToHeader: e => { e.preventDefault(); const t = e.dataTransfer.getData("itemType"); if (t && btns.buttonConfig.hidden.includes(t)) btns.setButtonConfig(p => ({ visible: [...p.visible, t], hidden: p.hidden.filter(x => x !== t) })); }, onDropToDropdown: e => { e.preventDefault(); const t = e.dataTransfer.getData("itemType"); if (t && btns.buttonConfig.visible.includes(t)) btns.setButtonConfig(p => ({ visible: p.visible.filter(x => x !== t), hidden: [...p.hidden, t] })); } };
@@ -142,3 +124,4 @@ export function OrderForm() {
         </form>
     );
 }
+

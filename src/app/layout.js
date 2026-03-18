@@ -63,6 +63,7 @@ export default async function RootLayout({ children }) {
             <BranchProvider>
               <SettingsProvider>
                 <AppLayout>{children}</AppLayout>
+                <TrialOverlay />
                 <Toaster position="top-right" richColors />
               </SettingsProvider>
             </BranchProvider>
@@ -70,5 +71,40 @@ export default async function RootLayout({ children }) {
         </ThemeProvider>
       </body>
     </html>
+  );
+}
+
+function TrialOverlay() {
+  const [show, setShow] = React.useState(true);
+  const [redirecting, setRedirecting] = React.useState(false);
+  const router = typeof window !== 'undefined' ? require('next/navigation').useRouter() : null;
+  const pathname = typeof window !== 'undefined' ? require('next/navigation').usePathname() : '';
+
+  React.useEffect(() => {
+    if (pathname === '/license-required') return;
+
+    const timer = setTimeout(() => {
+      setRedirecting(true);
+      router.push('/license-required');
+    }, 60000); // 60 seconds trial period
+
+    return () => clearTimeout(timer);
+  }, [router, pathname]);
+
+  if (pathname === '/license-required') return null;
+
+  return (
+    <>
+      <div className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03] select-none flex flex-wrap gap-20 p-20 content-center justify-center overflow-hidden">
+        {Array.from({ length: 50 }).map((_, i) => (
+          <div key={i} className="text-4xl font-bold -rotate-45 whitespace-nowrap">
+            TRIAL VERSION - CONTACT ARSLAN NAFEES
+          </div>
+        ))}
+      </div>
+      <div className="fixed bottom-4 left-4 z-[10000] bg-destructive text-destructive-foreground px-4 py-2 rounded-md shadow-lg text-sm font-medium animate-pulse">
+        Trial Version - {redirecting ? "Redirecting..." : "Limited Time Remaining"}
+      </div>
+    </>
   );
 }
