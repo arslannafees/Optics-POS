@@ -45,9 +45,12 @@ export async function GET(req, { params }) {
     }
 
     // Fetch order items with full inventory details joined in
+    // Explicitly exclude non-prescription items like contact lenses and accessories
     const rawItems = db.prepare(`
       SELECT item_type as itemType, item_id as itemId, item_name as itemName, quantity, price, total, prescription_data as prescriptionData
-      FROM order_items WHERE order_id = ?
+      FROM order_items 
+      WHERE order_id = ? 
+      AND item_type IN ('frame', 'frame_only', 'lens', 'spectacle_lens', 'spectacle-lens', 'spectacle_lenses', 'spectacle-lenses')
     `).all(job.orderId);
 
     const items = rawItems.map(item => {

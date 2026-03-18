@@ -87,9 +87,9 @@ export default function FabricatorDashboard() {
     }
   }, []);
 
-  const loadData = React.useCallback(async () => {
+  const loadData = React.useCallback(async (silent = false) => {
     if (!user) return;
-    setLoading(true);
+    if (!silent) setLoading(true);
     try {
       const shopId = user.shopId || localStorage.getItem("selectedShopId");
       const [jobsRes, statsRes] = await Promise.all([
@@ -103,11 +103,15 @@ export default function FabricatorDashboard() {
     } catch (e) {
       console.error(e);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [user]);
 
-  React.useEffect(() => { loadData(); }, [loadData]);
+  React.useEffect(() => {
+    loadData();
+    const interval = setInterval(() => loadData(true), 30000); // Poll every 30s
+    return () => clearInterval(interval);
+  }, [loadData]);
 
   const jobsByStage = (stageKey) => jobs.filter(j => j.status === stageKey);
 

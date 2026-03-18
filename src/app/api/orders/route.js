@@ -244,7 +244,7 @@ export async function POST(req) {
       const hasFrame = items.some(i => frameTypes.includes(getNormType(i)));
       const hasLens = items.some(i => lensTypes.includes(getNormType(i)));
       
-      if (hasFrame || hasLens) {
+      if (hasFrame && hasLens) {
         const frameItems = items.filter(i => frameTypes.includes(getNormType(i)));
         const lensItems = items.filter(i => lensTypes.includes(getNormType(i)));
         
