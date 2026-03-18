@@ -17,7 +17,7 @@ export async function submitOrder(formData, editId, currentShop, branchId, user)
     });
     if (res.ok) {
         toast.success(editId ? "Order updated" : "Order created");
-        return true;
+        return await res.json();
     }
     const err = await res.json();
     toast.error(err.error || "Failed to save order");

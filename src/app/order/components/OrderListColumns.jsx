@@ -27,6 +27,7 @@ export const getOrderColumns = (settings, actions) => [
                 <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}><button className="outline-none"><StatusB s={row.original.status} /></button></DropdownMenuTrigger>
                 <DropdownMenuContent>
                     <DropdownMenuItem onClick={(e) => { e.stopPropagation(); actions.onStatus(row.original.id, "pending"); }}><Clock className="mr-2 h-4 w-4" /> Pending</DropdownMenuItem>
+                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); actions.onStatus(row.original.id, "Ready"); }}><Package className="mr-2 h-4 w-4" /> Ready</DropdownMenuItem>
                     <DropdownMenuItem onClick={(e) => { e.stopPropagation(); actions.onStatus(row.original.id, "completed"); }}><CheckCircle2 className="mr-2 h-4 w-4" /> Completed</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
@@ -46,7 +47,15 @@ export const getOrderColumns = (settings, actions) => [
 ];
 
 const StatusB = ({ s }) => {
-    const i = { completed: CheckCircle2, pending: Clock, processing: Package, cancelled: XCircle }[s] || Clock;
+    const i = { completed: CheckCircle2, pending: Clock, Ready: Package, processing: Package, cancelled: XCircle }[s] || Clock;
+    const c = { 
+        completed: "bg-green-500/10 text-green-500 border-green-500/20", 
+        pending: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20", 
+        Ready: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+        processing: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+        cancelled: "bg-destructive/10 text-destructive border-destructive/20"
+    }[s] || "";
+    
     const Icon = i;
-    return <Badge variant="outline" className="font-normal capitalize"><Icon className="mr-1 h-3 w-3" /> {s || "pending"}</Badge>;
+    return <Badge variant="outline" className={`font-normal capitalize ${c}`}><Icon className="mr-1 h-3 w-3" /> {s || "pending"}</Badge>;
 };

@@ -54,6 +54,42 @@ export function NotificationSettings({ settings, update }) {
                     </Select>
                     <p className="text-xs text-muted-foreground italic">How long to hide alerts after dismissing them</p>
                 </div>
+                <Separator />
+                <div className="space-y-4 pt-2">
+                    <div className="flex items-center gap-2">
+                        <Label className="text-sm font-semibold">WhatsApp Notification Templates</Label>
+                    </div>
+                    <div className="space-y-3">
+                        <div className="space-y-1.5">
+                            <Label className="text-xs font-medium">Order Placed (Welcome Message)</Label>
+                            <textarea
+                                className="w-full min-h-[80px] p-2 text-sm rounded-md border bg-transparent resize-none focus:outline-none focus:ring-1 focus:ring-primary"
+                                value={settings.whatsapp_welcome_template || ""}
+                                onChange={e => update("whatsapp_welcome_template", e.target.value)}
+                                placeholder="Enter welcome message template..."
+                            />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label className="text-xs font-medium">Order Ready Notification</Label>
+                            <textarea
+                                className="w-full min-h-[80px] p-2 text-sm rounded-md border bg-transparent resize-none focus:outline-none focus:ring-1 focus:ring-primary"
+                                value={settings.whatsapp_ready_template || ""}
+                                onChange={e => update("whatsapp_ready_template", e.target.value)}
+                                placeholder="Enter ready notification template..."
+                            />
+                        </div>
+                        <div className="p-3 bg-muted/30 rounded-lg space-y-2">
+                            <p className="text-[10px] font-semibold uppercase text-muted-foreground tracking-wider">Available Placeholders</p>
+                            <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                                <span className="text-[10px]"><code className="bg-muted px-1 rounded">{"{customer}"}</code> - Name</span>
+                                <span className="text-[10px]"><code className="bg-muted px-1 rounded">{"{orderId}"}</code> - Order #</span>
+                                <span className="text-[10px]"><code className="bg-muted px-1 rounded">{"{shopName}"}</code> - Store Name</span>
+                                <span className="text-[10px]"><code className="bg-muted px-1 rounded">{"{total}"}</code> - Order Total</span>
+                                <span className="text-[10px]"><code className="bg-muted px-1 rounded">{"{balance}"}</code> - Balance Due</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </CardContent>
         </Card>
     );

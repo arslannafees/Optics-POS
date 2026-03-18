@@ -1,8 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { toast } from "sonner";
+import { formatWhatsAppMessage, getWhatsAppUrl } from "@/lib/notifications/whatsapp";
 
 export function useOrdersActions({ setOrders, setDeleteDialogOpen, setSelectedOrder }) {
+    const [whatsappOpen, setWhatsappOpen] = useState(false);
+    const [whatsappData, setWhatsappData] = useState(null);
+
     const handleStatusUpdate = async (orderId, newStatus) => {
         try {
             const user = JSON.parse(localStorage.getItem("user"));
@@ -12,8 +17,18 @@ export function useOrdersActions({ setOrders, setDeleteDialogOpen, setSelectedOr
                 body: JSON.stringify({ status: newStatus, user: { id: user.id, name: user.name, role: user.role } }),
             });
             if (res.ok) {
+                const updatedOrder = await res.json();
                 setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
                 toast.success(`Status updated to ${newStatus}`);
+                
+                if (newStatus === "Ready" && updatedOrder.customerPhone) {
+                    const message = formatWhatsAppMessage(updatedOrder.readyTemplate, updatedOrder);
+                    const url = getWhatsAppUrl(updatedOrder.customerPhone, message);
+                    if (url) {
+                        setWhatsappData({ name: updatedOrder.customer, message, url });
+                        setWhatsappOpen(true);
+                    }
+                }
             } else toast.error((await res.json()).error || "Failed to update");
         } catch (e) { toast.error("Error updating status"); }
     };
@@ -35,5 +50,5 @@ export function useOrdersActions({ setOrders, setDeleteDialogOpen, setSelectedOr
         finally { setDeleteDialogOpen(false); setSelectedOrder(null); }
     };
 
-    return { handleStatusUpdate, confirmDelete };
+    return { handleStatusUpdate, confirmDelete, whatsappOpen, setWhatsappOpen, whatsappData };
 }

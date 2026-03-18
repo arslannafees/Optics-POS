@@ -7,6 +7,7 @@ import { useOrders } from "@/hooks/useOrders";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { DataTable } from "@/components/ui/data-table";
 import { OrderPageHeader, OrderStats, OrderDeleteDialog, getOrderColumns } from "./components";
+import { WhatsAppPromptDialog } from "@/components/notifications/WhatsAppPromptDialog";
 
 export default function OrderPage() {
     const { settings } = useSettings();
@@ -45,6 +46,14 @@ export default function OrderPage() {
                 setOpen={h.setDeleteDialogOpen}
                 order={h.selectedOrder}
                 onConfirm={h.confirmDelete}
+            />
+
+            <WhatsAppPromptDialog 
+                open={h.whatsappOpen} 
+                onOpenChange={h.setWhatsappOpen} 
+                customerName={h.whatsappData?.name}
+                message={h.whatsappData?.message}
+                onConfirm={() => { window.open(h.whatsappData?.url, "_blank"); h.setWhatsappOpen(false); }}
             />
         </div>
     );

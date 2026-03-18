@@ -8,6 +8,7 @@ export function OrderStatusBadge({ status }) {
     const config = {
         completed: { icon: CheckCircle2, color: "bg-green-500/10 text-green-500 border-green-500/20" },
         pending: { icon: Clock, color: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" },
+        Ready: { icon: Package, color: "bg-blue-500/10 text-blue-500 border-blue-500/20" },
         processing: { icon: Package, color: "bg-blue-500/10 text-blue-500 border-blue-500/20" },
         cancelled: { icon: XCircle, color: "bg-destructive/10 text-destructive border-destructive/20" },
     }[status] || { icon: Clock, color: "" };

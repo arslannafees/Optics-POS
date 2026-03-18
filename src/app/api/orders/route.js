@@ -262,26 +262,30 @@ export async function POST(req) {
 
     const newOrder = db.prepare(`
       SELECT
-        id,
-        customer_name as customer,
-        order_type as orderType,
-        order_date as date,
-        delivery_date as deliveryDate,
-        status,
-        subtotal,
-        discount,
-        tax,
-        total,
-        actual_total as actualTotal,
-        advance,
-        balance,
-        notes,
-        created_at as createdAt,
-        shop_id as shopId,
-        branch_id as branchId,
-        local_id as localId
-      FROM orders
-      WHERE id = ?
+        o.id,
+        o.customer_name as customer,
+        COALESCE(c.mobile, c.phone) as customerPhone,
+        o.order_type as orderType,
+        o.order_date as date,
+        o.delivery_date as deliveryDate,
+        o.status,
+        o.subtotal,
+        o.discount,
+        o.tax,
+        o.total,
+        o.actual_total as actualTotal,
+        o.advance,
+        o.balance,
+        o.notes,
+        o.created_at as createdAt,
+        o.shop_id as shopId,
+        o.branch_id as branchId,
+        o.local_id as localId,
+        (SELECT value FROM settings WHERE key = 'businessName' AND shop_id = o.shop_id) as shopName,
+        (SELECT value FROM settings WHERE key = 'whatsapp_welcome_template' AND shop_id = o.shop_id) as welcomeTemplate
+      FROM orders o
+      LEFT JOIN customers c ON o.customer_id = c.id
+      WHERE o.id = ?
     `).get(orderId);
 
     // Log activity

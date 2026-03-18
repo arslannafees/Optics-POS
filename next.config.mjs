@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    reactStrictMode: true,
+    distDir: process.env.NEXT_DIST_DIR || '.next',
+    output: 'standalone',
     async headers() {
         return [
             {
@@ -65,6 +68,7 @@ const nextConfig = {
             '@radix-ui/react-switch',
             'date-fns',
             '@tanstack/react-table',
+            'framer-motion',
         ],
     },
 

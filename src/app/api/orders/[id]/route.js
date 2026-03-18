@@ -486,7 +486,19 @@ export async function PATCH(req, { params }) {
       return NextResponse.json({ error: "Order update failed" }, { status: 500 });
     }
 
-    const updated = db.prepare("SELECT id, status FROM orders WHERE id = ?").get(id);
+    const updated = db.prepare(`
+      SELECT 
+        o.id, 
+        o.status, 
+        o.local_id as localId,
+        o.customer_name as customer,
+        COALESCE(c.mobile, c.phone) as customerPhone,
+        (SELECT value FROM settings WHERE key = 'businessName' AND shop_id = o.shop_id) as shopName,
+        (SELECT value FROM settings WHERE key = 'whatsapp_ready_template' AND shop_id = o.shop_id) as readyTemplate
+      FROM orders o
+      LEFT JOIN customers c ON o.customer_id = c.id
+      WHERE o.id = ?
+    `).get(id);
 
     // Log activity
     if (user && existingOrder) {

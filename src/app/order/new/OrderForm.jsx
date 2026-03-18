@@ -9,6 +9,8 @@ import * as api from "@/lib/order-api";
 import { NewOrderHeader, CustomerInformation, OrderItems, PrescriptionSection, SummaryDetails, PaymentFields } from "./components";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { formatWhatsAppMessage, getWhatsAppUrl } from "@/lib/notifications/whatsapp";
+import { WhatsAppPromptDialog } from "@/components/notifications/WhatsAppPromptDialog";
 
 function playScanSound(type) {
     try {
@@ -87,10 +89,27 @@ export function OrderForm() {
         }
     }, [editId, searchParams, settings.eyeCheckupFee, actions]);
 
+    const [whatsappOpen, setWhatsappOpen] = React.useState(false);
+    const [whatsappData, setWhatsappData] = React.useState({ name: "", message: "", url: "" });
+
     const onSubmit = (e) => {
         e.preventDefault();
         const user = JSON.parse(localStorage.getItem("user"));
-        api.submitOrder(st.formData, editId, currentShop, currentBranch?.id, user).then(ok => ok && router.push("/order"));
+        api.submitOrder(st.formData, editId, currentShop, currentBranch?.id, user).then(order => {
+            if (order) {
+                if (order.customerPhone && !editId) {
+                    const message = formatWhatsAppMessage(order.welcomeTemplate, order);
+                    const url = getWhatsAppUrl(order.customerPhone, message);
+                    if (url) {
+                        setWhatsappData({ name: order.customer, message, url });
+                        setWhatsappOpen(true);
+                        return; // Wait for dialog, don't redirect yet? Actually, redirecting to list is fine, but dialog might get lost.
+                        // Let's redirect after they close or click send.
+                    }
+                }
+                router.push("/order");
+            }
+        });
     };
 
     const isEC = st.formData.items.length > 0 && st.formData.items.every(i => i.type === "eye-checkup");
@@ -113,6 +132,13 @@ export function OrderForm() {
                     </CardContent>
                 </Card>
             </div>
+            <WhatsAppPromptDialog 
+                open={whatsappOpen} 
+                onOpenChange={(open) => { if(!open) { setWhatsappOpen(false); router.push("/order"); } }} 
+                customerName={whatsappData.name}
+                message={whatsappData.message}
+                onConfirm={() => { window.open(whatsappData.url, "_blank"); setWhatsappOpen(false); router.push("/order"); }}
+            />
         </form>
     );
 }

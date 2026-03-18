@@ -25,7 +25,19 @@ export function initSettings(db, defaultShopId) {
     if (hasGlobalUnique) migrateSettings(db, defaultShopId);
 
     // Default settings for new installations
-    const defaults = [['currency', 'PKR'], ['taxRate', '18'], ['dateFormat', 'DD/MM/YYYY'], ['invoicePrefix', 'INV'], ['invoiceStartNumber', '1'], ['lowStockThreshold', '5'], ['lowStockAlert', 'true'], ['printerType', 'laserjet'], ['businessName', 'Default Shop']];
+    const defaults = [
+        ['currency', 'PKR'],
+        ['taxRate', '18'],
+        ['dateFormat', 'DD/MM/YYYY'],
+        ['invoicePrefix', 'INV'],
+        ['invoiceStartNumber', '1'],
+        ['lowStockThreshold', '5'],
+        ['lowStockAlert', 'true'],
+        ['printerType', 'laserjet'],
+        ['businessName', 'Default Shop'],
+        ['whatsapp_welcome_template', 'Hi {customer}, thank you for shopping at {shopName}! Your order #{orderId} is confirmed. Total: {total}. We will notify you when it\'s ready.'],
+        ['whatsapp_ready_template', 'Hi {customer}, your order #{orderId} is ready for pickup at {shopName}. We look forward to seeing you!']
+    ];
     const ins = db.prepare('INSERT OR IGNORE INTO settings(shop_id, key, value) VALUES(?, ?, ?)');
     for (const [k, v] of defaults) ins.run(defaultShopId, k, v);
 
