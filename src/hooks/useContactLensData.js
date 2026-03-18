@@ -3,7 +3,11 @@
 import useSWR from "swr";
 import { useBranch } from "@/contexts/BranchContext";
 
-const fetcher = (url) => fetch(url).then(res => res.json());
+const fetcher = async (url) => {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('API Error');
+    return res.json();
+};
 
 export function useContactLensData() {
     const { currentShop, currentBranch } = useBranch();

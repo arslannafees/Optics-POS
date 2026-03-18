@@ -5,7 +5,9 @@ import { Toaster } from "@/components/ui/sonner";
 import { SettingsProvider } from "@/contexts/SettingsContext";
 import { BranchProvider } from "@/contexts/BranchContext";
 import { ThemeProvider } from "next-themes";
+import { AuthFetchProvider } from "@/components/AuthFetchProvider";
 
+import { headers } from "next/headers";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -33,27 +35,29 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const nonce = (await headers()).get("x-nonce");
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Allow unsafe-eval for recharts/charting libs that use new Function() */}
-        <meta
-          httpEquiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self'; worker-src 'self' blob:;"
-        />
+        {/* Pass the nonce to Next.js font and script tags if needed */}
+        <meta property="csp-nonce" content={nonce} />
       </head>
       <body
         className={`${dmSans.variable} ${poppins.variable} font-sans antialiased min-h-screen bg-background`}
         suppressHydrationWarning
+        nonce={nonce}
       >
-        <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
-          <BranchProvider>
-            <SettingsProvider>
-              <AppLayout>{children}</AppLayout>
-              <Toaster position="top-right" richColors />
-            </SettingsProvider>
-          </BranchProvider>
+        <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange nonce={nonce}>
+          <AuthFetchProvider>
+            <BranchProvider>
+              <SettingsProvider>
+                <AppLayout>{children}</AppLayout>
+                <Toaster position="top-right" richColors />
+              </SettingsProvider>
+            </BranchProvider>
+          </AuthFetchProvider>
         </ThemeProvider>
       </body>
     </html>

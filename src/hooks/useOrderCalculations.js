@@ -16,12 +16,14 @@ export function useOrderCalculations(formData, setFormData, settings) {
             ? (subtotal * (taxRate / 100))
             : ((subtotal - discount) * (taxRate / 100));
 
-        const total = subtotal - discount + tax;
+        const rawTotal = subtotal - discount + tax;
+        const total = settings?.roundOffTotal === "true" ? Math.ceil(rawTotal) : rawTotal;
+
         setFormData(prev => {
-            if (prev.subtotal === subtotal && prev.discount === discount && prev.tax === tax && prev.total === total) {
+            if (prev.subtotal === subtotal && prev.discount === discount && prev.tax === tax && prev.total === total && prev.actualTotal === rawTotal) {
                 return prev; // No change — skip re-render
             }
-            return { ...prev, subtotal, discount, tax, total };
+            return { ...prev, subtotal, discount, tax, total, actualTotal: rawTotal };
         });
     }, [formData.items, formData.discountPercentage, settings, setFormData]);
 }

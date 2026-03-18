@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
 import getDb from "@/lib/db";
 import { logActivity } from "@/lib/log-activity";
+import { verifyAuth, isAuthError, requireShop, forbiddenResponse } from "@/lib/auth";
 
 // GET all lenses
 export async function GET(req) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const { searchParams } = new URL(req.url);
-    const shopId = searchParams.get("shopId");
+    const shopId = searchParams.get("shopId") || auth.shopId;
+    if (!requireShop(auth, shopId)) return forbiddenResponse("Access denied to this shop");
     const branchId = searchParams.get("branchId");
     const db = getDb();
 
@@ -66,9 +70,15 @@ export async function GET(req) {
 
 // POST create new lens
 export async function POST(req) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const body = await req.json();
-    const { brand, name, type, material, coating, cost, price, barcode, stock, remarks, active = true, branchId, shopId, user } = body;
+    const { brand, name, type, material, coating, cost, price, barcode, stock, remarks, active = true, branchId, user } = body;
+
+    // SECURITY: Enforce tenant isolation — use JWT shopId, ignore body shopId
+    const shopId = body.shopId || auth.shopId;
+    if (!requireShop(auth, shopId)) return forbiddenResponse("Access denied to this shop");
 
     if (!name || !shopId) {
       return NextResponse.json(

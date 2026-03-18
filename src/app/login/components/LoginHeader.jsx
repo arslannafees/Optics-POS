@@ -9,7 +9,7 @@ export function LoginHeader() {
     const [businessName, setBusinessName] = useState("Optics");
 
     useEffect(() => {
-        fetch("/api/super-admin/settings")
+        fetch("/api/public/settings")
             .then(res => res.json())
             .then(data => {
                 if (data && data.businessName) {

@@ -1,27 +1,15 @@
 import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import getDb, { query } from "@/lib/db";
-
-const JWT_SECRET = process.env.JWT_SECRET || "opticofy-secret-key-2024";
+import { verifyAuth, isAuthError } from "@/lib/auth";
 
 export async function GET(req) {
+    const auth = verifyAuth(req);
+    if (isAuthError(auth)) return auth;
+
     try {
-        const authHeader = req.headers.get("authorization");
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
-
-        const token = authHeader.split(" ")[1];
-        let decoded;
-        try {
-            decoded = jwt.verify(token, JWT_SECRET);
-        } catch (err) {
-            return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-        }
-
         const db = getDb();
-        const user = db.prepare("SELECT id, name, email, role, shop_id as shopId, branch_id as branchId, expires_at as expiresAt, validity_type as validityType, created_at as createdAt FROM users WHERE id = ?").get(decoded.id);
+        const user = db.prepare("SELECT id, name, email, role, shop_id as shopId, branch_id as branchId, expires_at as expiresAt, validity_type as validityType, created_at as createdAt FROM users WHERE id = ?").get(auth.id);
 
         if (!user) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -35,20 +23,10 @@ export async function GET(req) {
 }
 
 export async function PATCH(req) {
+    const auth = verifyAuth(req);
+    if (isAuthError(auth)) return auth;
+
     try {
-        const authHeader = req.headers.get("authorization");
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
-
-        const token = authHeader.split(" ")[1];
-        let decoded;
-        try {
-            decoded = jwt.verify(token, JWT_SECRET);
-        } catch (err) {
-            return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-        }
-
         const { name, email, currentPassword, newPassword } = await req.json();
 
         if (!name || !email) {
@@ -58,7 +36,7 @@ export async function PATCH(req) {
         const db = getDb();
 
         // Check if email is already taken by another user
-        const existingUser = db.prepare("SELECT id FROM users WHERE email = ? AND id != ?").get(email, decoded.id);
+        const existingUser = db.prepare("SELECT id FROM users WHERE email = ? AND id != ?").get(email, auth.id);
         if (existingUser) {
             return NextResponse.json({ error: "Email already in use" }, { status: 400 });
         }
@@ -69,7 +47,7 @@ export async function PATCH(req) {
                 return NextResponse.json({ error: "Current password is required to set a new one" }, { status: 400 });
             }
 
-            const user = db.prepare("SELECT password FROM users WHERE id = ?").get(decoded.id);
+            const user = db.prepare("SELECT password FROM users WHERE id = ?").get(auth.id);
 
             const validPassword = await bcrypt.compare(currentPassword, user.password);
 
@@ -78,13 +56,13 @@ export async function PATCH(req) {
             }
 
             const hashedPassword = await bcrypt.hash(newPassword, 10);
-            db.prepare("UPDATE users SET password = ? WHERE id = ?").run(hashedPassword, decoded.id);
+            db.prepare("UPDATE users SET password = ? WHERE id = ?").run(hashedPassword, auth.id);
         }
 
         db.prepare("UPDATE users SET name = ?, email = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?")
-            .run(name, email, decoded.id);
+            .run(name, email, auth.id);
 
-        const updatedUser = db.prepare("SELECT id, name, email, role, shop_id as shopId, branch_id as branchId, expires_at as expiresAt, validity_type as validityType FROM users WHERE id = ?").get(decoded.id);
+        const updatedUser = db.prepare("SELECT id, name, email, role, shop_id as shopId, branch_id as branchId, expires_at as expiresAt, validity_type as validityType FROM users WHERE id = ?").get(auth.id);
 
         return NextResponse.json({
             message: "Profile updated successfully",

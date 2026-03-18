@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import getDb from "@/lib/db";
+import { verifyAuth, isAuthError } from "@/lib/auth";
 
 // GET all prescriptions for a specific customer
 export async function GET(req, { params }) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const { id } = await params;
     const db = getDb();

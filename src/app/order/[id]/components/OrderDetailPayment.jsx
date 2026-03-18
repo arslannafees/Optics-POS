@@ -16,7 +16,17 @@ export function OrderDetailPayment({ order, settings }) {
                     {order.discount > 0 && <div className="flex justify-between text-sm"><span className="text-muted-foreground">Discount</span><span className="text-destructive">- {cur} {Number(order.discount).toLocaleString()}</span></div>}
                     {order.tax > 0 && <div className="flex justify-between text-sm"><span className="text-muted-foreground">Tax</span><span>{cur} {Number(order.tax).toLocaleString()}</span></div>}
                     <Separator />
-                    <div className="flex justify-between font-bold text-lg"><span>Total</span><span className="text-primary">{cur} {Number(order.total || 0).toLocaleString()}</span></div>
+                    <div className="flex flex-col items-end">
+                        <div className="flex justify-between w-full font-bold text-lg">
+                            <span>Total</span>
+                            <span className="text-primary">{cur} {Number(order.total || 0).toLocaleString()}</span>
+                        </div>
+                        {order.actualTotal && Number(order.actualTotal) !== Number(order.total) && (
+                            <span className="text-[10px] text-muted-foreground mr-1">
+                                Actual: {cur} {Number(order.actualTotal).toFixed(2)}
+                            </span>
+                        )}
+                    </div>
                 </div>
                 <div className="pt-4 space-y-2">
                     <div className="flex justify-between text-sm font-medium"><span className="text-muted-foreground">Advance Paid</span><span className="text-green-600">{cur} {Number(order.advance || 0).toLocaleString()}</span></div>

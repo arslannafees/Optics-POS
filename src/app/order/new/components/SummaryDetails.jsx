@@ -40,7 +40,17 @@ export const SummaryDetails = React.memo(function SummaryDetails({ formData, set
             {formData.discount > 0 && <div className="flex justify-between"><span className="text-muted-foreground">Net</span><span>{cur} {(formData.subtotal - formData.discount).toLocaleString()}</span></div>}
             {formData.tax > 0 && <div className="flex justify-between"><span className="text-muted-foreground">Tax</span><span>{cur} {formData.tax.toLocaleString()}</span></div>}
             <Separator />
-            <div className="flex justify-between text-lg font-semibold"><span>Total</span><span>{cur} {formData.total.toLocaleString()}</span></div>
+            <div className="flex flex-col items-end">
+                <div className="flex justify-between w-full text-lg font-semibold">
+                    <span>Total</span>
+                    <span>{cur} {formData.total.toLocaleString()}</span>
+                </div>
+                {settings?.roundOffTotal === "true" && formData.actualTotal !== formData.total && (
+                    <span className="text-[10px] text-muted-foreground mr-1">
+                        Actual: {cur} {Number(formData.actualTotal).toFixed(2)}
+                    </span>
+                )}
+            </div>
         </div>
     );
 });

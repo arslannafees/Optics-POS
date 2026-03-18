@@ -13,7 +13,7 @@ export function PrintLayoutThermal({ order, settings, cashierName, isPreview = f
             <div className="bg-white p-4 w-[80mm] min-h-fit shadow-xl print:shadow-none font-sans text-black leading-tight">
                 <style dangerouslySetInnerHTML={{ __html: "@media print { @page { margin: 0; size: 80mm auto; } body { margin: 0; padding: 0 !important; } }" }} />
 
-                <ThermalHeader order={order} settings={settings} />
+                <ThermalHeader order={order} settings={settings} cashierName={cashierName} />
 
                 <ThermalItemsTable items={order.items} />
 

@@ -1,14 +1,18 @@
 import { NextResponse } from "next/server";
 import getDb from "@/lib/db";
+import { verifyAuth, isAuthError, requireShop, forbiddenResponse } from "@/lib/auth";
 
 export async function GET(req) {
+    const auth = verifyAuth(req);
+    if (isAuthError(auth)) return auth;
     try {
         const { searchParams } = new URL(req.url);
         const fromDate = searchParams.get("fromDate");
         const toDate = searchParams.get("toDate");
         const orderType = searchParams.get("orderType");
         const branchId = searchParams.get("branchId");
-        const shopId = searchParams.get("shopId");
+        const shopId = searchParams.get("shopId") || auth.shopId;
+        if (!requireShop(auth, shopId)) return forbiddenResponse("Access denied to this shop");
 
         if (!shopId) {
             return NextResponse.json({ error: "Shop ID is required" }, { status: 400 });

@@ -155,11 +155,11 @@ export default function JobQueuePage() {
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground truncate">
-                    {job.lensInfo
-                      ? (Array.isArray(job.lensInfo) ? job.lensInfo.map(l => l.name).join(", ") : String(job.lensInfo))
-                      : "No lens details"}
+                    {job.lensInfo && Array.isArray(job.lensInfo) && job.lensInfo.length > 0
+                      ? job.lensInfo.map(l => l.name || "Lens").join(", ")
+                      : (job.lensInfo ? String(job.lensInfo) : "No lens details")}
                     {job.frameInfo && (
-                      <> &middot; {Array.isArray(job.frameInfo) ? job.frameInfo.map(f => f.name).join(", ") : String(job.frameInfo)}</>
+                      <> &middot; {Array.isArray(job.frameInfo) ? job.frameInfo.map(f => f.name || "Frame").join(", ") : String(job.frameInfo)}</>
                     )}
                   </p>
                 </div>

@@ -1,14 +1,18 @@
 import { NextResponse } from "next/server";
 import getDb from "@/lib/db";
 import { logActivity } from "@/lib/log-activity";
+import { verifyAuth, isAuthError, requireShop, forbiddenResponse } from "@/lib/auth";
 
 // GET all purchases with optional filters
 export async function GET(req) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const { searchParams } = new URL(req.url);
     const vendorId = searchParams.get("vendorId");
     const branchId = searchParams.get("branchId");
-    const shopId = searchParams.get("shopId");
+    const shopId = searchParams.get("shopId") || auth.shopId;
+    if (!requireShop(auth, shopId)) return forbiddenResponse("Access denied to this shop");
     const fromDate = searchParams.get("fromDate");
     const toDate = searchParams.get("toDate");
 
@@ -82,6 +86,8 @@ export async function GET(req) {
 
 // POST create new purchase
 export async function POST(req) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const body = await req.json();
     const {
@@ -97,9 +103,12 @@ export async function POST(req) {
       paymentMethod,
       remarks,
       branchId,
-      shopId,
       user
     } = body;
+
+    // SECURITY: Enforce tenant isolation — use JWT shopId, ignore body shopId
+    const shopId = body.shopId || auth.shopId;
+    if (!requireShop(auth, shopId)) return forbiddenResponse("Access denied to this shop");
 
     if (!vendorId) {
       return NextResponse.json(

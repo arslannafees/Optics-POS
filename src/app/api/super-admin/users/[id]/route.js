@@ -2,8 +2,12 @@ import { NextResponse } from "next/server";
 import getDb from "@/lib/db";
 
 import bcrypt from "bcryptjs";
+import { verifyAuth, isAuthError, requireRole, forbiddenResponse } from "@/lib/auth";
 
 export async function DELETE(req, props) {
+    const auth = verifyAuth(req);
+    if (isAuthError(auth)) return auth;
+    if (!requireRole(auth, 'super-admin')) return forbiddenResponse("Super-admin access required");
     try {
         const params = await props.params;
         const { id } = params;
@@ -34,6 +38,9 @@ export async function DELETE(req, props) {
 }
 
 export async function PUT(req, props) {
+    const auth = verifyAuth(req);
+    if (isAuthError(auth)) return auth;
+    if (!requireRole(auth, 'super-admin')) return forbiddenResponse("Super-admin access required");
     try {
         const params = await props.params;
         const { id } = params;

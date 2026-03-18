@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
 import getDb from "@/lib/db";
 import { logActivity } from "@/lib/log-activity";
+import { verifyAuth, isAuthError, requireShop, forbiddenResponse } from "@/lib/auth";
 
 // GET all settings for a specific shop
 export async function GET(req) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const { searchParams } = new URL(req.url);
-    const shopId = searchParams.get("shopId");
+    const shopId = searchParams.get("shopId") || auth.shopId;
+    if (!requireShop(auth, shopId)) return forbiddenResponse("Access denied to this shop");
 
     const db = getDb();
     const settings = db.prepare("SELECT * FROM settings WHERE shop_id = ?").all(shopId);
@@ -28,9 +32,15 @@ export async function GET(req) {
 
 // POST/PUT update settings
 export async function POST(req) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const body = await req.json();
-    const { shopId, user, ...settingsData } = body;
+    const { user, ...settingsData } = body;
+
+    // SECURITY: Enforce tenant isolation — use JWT shopId, ignore body shopId
+    const shopId = body.shopId || auth.shopId;
+    if (!requireShop(auth, shopId)) return forbiddenResponse("Access denied to this shop");
 
     if (!shopId) {
       return NextResponse.json({ error: "Shop ID is required" }, { status: 400 });

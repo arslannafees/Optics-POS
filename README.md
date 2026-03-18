@@ -725,7 +725,9 @@ This is a private project. For any inquiries, please contact the project maintai
 
 ## 📄 License
 
-This project is proprietary and confidential. Unauthorized copying, distribution, or use is strictly prohibited.
+PROPRIETARY & CONFIDENTIAL LICENSE
+
+This software and associated documentation files (the "Software/Web Application") are proprietary and confidential. Unauthorized copying, distribution, modification, or use of this Software, via any medium, is strictly prohibited without express written permission from the copyright holder.
 
 ```
 Copyright (c) 2026 Arslan Nafees

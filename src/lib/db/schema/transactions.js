@@ -34,6 +34,7 @@ export function initTransactions(db, defaultShopId) {
     id INTEGER PRIMARY KEY AUTOINCREMENT, shop_id INTEGER REFERENCES shops(id),
     local_id INTEGER,
     branch_id INTEGER REFERENCES branches(id), customer_id INTEGER REFERENCES customers(id) ON DELETE CASCADE,
+    user_id INTEGER REFERENCES users(id),
     customer_name TEXT, order_type TEXT, order_date DATE, delivery_date DATE,
     status TEXT DEFAULT 'pending', subtotal REAL DEFAULT 0, discount REAL DEFAULT 0,
     tax REAL DEFAULT 0, total REAL DEFAULT 0, advance REAL DEFAULT 0, balance REAL DEFAULT 0,
@@ -57,6 +58,12 @@ export function initTransactions(db, defaultShopId) {
 
   // Migrations to add local_id if missing
   const tablesToUpdate = ['customers', 'orders', 'vendors', 'purchases'];
+  
+  const orderColsLocal = db.prepare("PRAGMA table_info(orders)").all().map(c => c.name);
+  if (!orderColsLocal.includes('user_id')) db.exec("ALTER TABLE orders ADD COLUMN user_id INTEGER REFERENCES users(id)");
+  if (!orderColsLocal.includes('actual_total')) db.exec("ALTER TABLE orders ADD COLUMN actual_total REAL DEFAULT 0");
+
+
 
   tablesToUpdate.forEach(tableName => {
     const cols = db.prepare(`PRAGMA table_info(${tableName})`).all().map(c => c.name);

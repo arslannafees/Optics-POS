@@ -104,6 +104,18 @@ export function SystemSettings({ settings, update }) {
                         />
                         <p className="text-xs text-muted-foreground">This fee will be automatically applied when adding an "Eye Checkup" to an order.</p>
                     </div>
+
+                    {/* Round Off Total Amount */}
+                    <SSelect
+                        label="Round Off Total Amount"
+                        value={settings.roundOffTotal || "false"}
+                        onChange={v => update("roundOffTotal", v)}
+                        description="Always round up the total amount to the nearest integer (e.g., 21.1 -> 22)."
+                        options={[
+                            { i: "true", n: "Enabled" },
+                            { i: "false", n: "Disabled" }
+                        ]}
+                    />
                 </div>
             </CardContent>
         </Card>

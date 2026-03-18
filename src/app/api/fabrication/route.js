@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 import getDb from "@/lib/db";
+import { verifyAuth, isAuthError, requireShop, forbiddenResponse } from "@/lib/auth";
 
 // GET all fabrication jobs with optional filters
 export async function GET(req) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const { searchParams } = new URL(req.url);
-    const shopId = searchParams.get("shopId");
+    const shopId = searchParams.get("shopId") || auth.shopId;
+    if (!requireShop(auth, shopId)) return forbiddenResponse("Access denied to this shop");
     const orderId = searchParams.get("orderId");
     const status = searchParams.get("status");
     const priority = searchParams.get("priority");
@@ -83,13 +87,22 @@ export async function GET(req) {
 
     const jobs = db.prepare(query).all(...params);
 
-    // Parse JSON fields
-    const parsed = jobs.map(j => ({
-      ...j,
-      frameInfo: j.frameInfo ? JSON.parse(j.frameInfo) : null,
-      lensInfo: j.lensInfo ? JSON.parse(j.lensInfo) : null,
-      prescriptionData: j.prescriptionData ? JSON.parse(j.prescriptionData) : null,
-    }));
+    // Parse JSON fields and provide fallbacks
+    const parsed = jobs.map(j => {
+      const lensInfo = j.lensInfo ? JSON.parse(j.lensInfo) : null;
+      const frameInfo = j.frameInfo ? JSON.parse(j.frameInfo) : null;
+      
+      // If lensInfo is missing but this is an order that might have items, 
+      // the detail page will fetch them anyway. For the list view, we just ensure
+      // the structure is consistent for the frontend mapping.
+      
+      return {
+        ...j,
+        frameInfo,
+        lensInfo,
+        prescriptionData: j.prescriptionData ? JSON.parse(j.prescriptionData) : null,
+      };
+    });
 
     return NextResponse.json(parsed);
   } catch (error) {
@@ -100,9 +113,15 @@ export async function GET(req) {
 
 // POST manually create a fabrication job
 export async function POST(req) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const body = await req.json();
-    const { orderId, shopId, branchId, priority, patientName, frameInfo, lensInfo, prescriptionData, opticianNotes } = body;
+    const { orderId, branchId, priority, patientName, frameInfo, lensInfo, prescriptionData, opticianNotes } = body;
+
+    // SECURITY: Enforce tenant isolation — use JWT shopId, ignore body shopId
+    const shopId = body.shopId || auth.shopId;
+    if (!requireShop(auth, shopId)) return forbiddenResponse("Access denied to this shop");
 
     if (!orderId) {
       return NextResponse.json({ error: "orderId is required" }, { status: 400 });

@@ -34,9 +34,16 @@ export function LaserjetFooter({ order, settings }) {
                     </div>
                 )}
                 <div className="h-px bg-slate-800 my-2"></div>
-                <div className="flex justify-between items-center bg-slate-100 p-2 rounded-sm">
-                    <span className="font-bold text-lg text-slate-800">Total</span>
-                    <span className="font-bold text-lg text-slate-800">{settings?.currency} {Number(order.total || 0).toLocaleString()}</span>
+                <div className="flex flex-col bg-slate-100 p-2 rounded-sm">
+                    <div className="flex justify-between items-center w-full">
+                        <span className="font-bold text-lg text-slate-800">Total</span>
+                        <span className="font-bold text-lg text-slate-800">{settings?.currency} {Number(order.total || 0).toLocaleString()}</span>
+                    </div>
+                    {order.actualTotal && Number(order.actualTotal) !== Number(order.total) && (
+                        <div className="text-right text-[9px] text-slate-500 font-medium">
+                            (ACTUAL: {settings?.currency} {Number(order.actualTotal).toFixed(2)})
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

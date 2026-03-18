@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
 import getDb from "@/lib/db";
+import { verifyAuth, isAuthError, requireShop, forbiddenResponse } from "@/lib/auth";
 
 // GET all branches for a specific shop
 export async function GET(req) {
+    const auth = verifyAuth(req);
+    if (isAuthError(auth)) return auth;
     try {
         const { searchParams } = new URL(req.url);
-        const shopId = searchParams.get('shopId');
+        const shopId = searchParams.get('shopId') || auth.shopId;
 
+        if (!requireShop(auth, shopId)) return forbiddenResponse("Access denied to this shop");
         if (!shopId) {
             return NextResponse.json({ error: "Shop ID is required" }, { status: 400 });
         }
@@ -22,9 +26,15 @@ export async function GET(req) {
 
 // POST create new branch
 export async function POST(req) {
+    const auth = verifyAuth(req);
+    if (isAuthError(auth)) return auth;
     try {
         const body = await req.json();
-        const { name, address, phone, shopId } = body;
+        const { name, address, phone } = body;
+
+        // SECURITY: Enforce tenant isolation — use JWT shopId, ignore body shopId
+        const shopId = body.shopId || auth.shopId;
+        if (!requireShop(auth, shopId)) return forbiddenResponse("Access denied to this shop");
 
         if (!name || !name.trim()) {
             return NextResponse.json({ error: "Branch name is required" }, { status: 400 });

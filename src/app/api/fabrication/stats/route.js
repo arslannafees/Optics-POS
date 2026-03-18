@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import getDb from "@/lib/db";
+import { verifyAuth, isAuthError } from "@/lib/auth";
 
 // GET daily stats for fabrication dashboard
 export async function GET(req) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const { searchParams } = new URL(req.url);
     const shopId = searchParams.get("shopId");

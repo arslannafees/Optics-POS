@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import getDb from "@/lib/db";
+import { verifyAuth, isAuthError, requireRole, forbiddenResponse } from "@/lib/auth";
 
 // GET all branches (optionally for a specific shop)
 export async function GET(req) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
+  if (!requireRole(auth, 'super-admin')) return forbiddenResponse("Super-admin access required");
   try {
     const { searchParams } = new URL(req.url);
     const shopId = searchParams.get('shopId');
@@ -45,6 +49,9 @@ export async function GET(req) {
 
 // POST create new branch for a specific shop
 export async function POST(req) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
+  if (!requireRole(auth, 'super-admin')) return forbiddenResponse("Super-admin access required");
   try {
     const body = await req.json();
     const { name, address, phone, shopId } = body;

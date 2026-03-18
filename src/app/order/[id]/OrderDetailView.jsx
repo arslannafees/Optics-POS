@@ -32,7 +32,7 @@ export default function OrderDetailPageWrapper() {
                 {settings?.printerType === "thermal" ? (
                     <PrintLayoutThermal order={order} settings={settings} cashierName={cashierName} />
                 ) : (
-                    <PrintLayoutLaserjet order={order} settings={settings} />
+                    <PrintLayoutLaserjet order={order} settings={settings} cashierName={cashierName} />
                 )}
             </div>
         </div>

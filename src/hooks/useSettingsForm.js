@@ -13,7 +13,8 @@ export function useSettingsForm(currentShopId) {
         invoicePrefix: "INV", invoiceStartNumber: "1", invoiceTerms: "", customerMessage: "", showLogo: true,
         lowStockAlert: true, lowStockThreshold: "5", emailNotifications: false, alertMuteDuration: "refresh",
         currency: "PKR", dateFormat: "DD/MM/YYYY", taxRate: "18", discountType: "percentage",
-        taxApplication: "pre-tax", prescriptionInputType: "manual", printerType: "laserjet", eyeCheckupFee: "0"
+        taxApplication: "pre-tax", prescriptionInputType: "manual", printerType: "laserjet", eyeCheckupFee: "0",
+        roundOffTotal: "false"
     });
 
     useEffect(() => {

@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
 import getDb from "@/lib/db";
 import { logActivity } from "@/lib/log-activity";
+import { verifyAuth, isAuthError, requireShop, forbiddenResponse } from "@/lib/auth";
 
 // GET all orders with optional filters
 export async function GET(req) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const { searchParams } = new URL(req.url);
-    const shopId = searchParams.get("shopId");
+    const shopId = searchParams.get("shopId") || auth.shopId;
+    if (!requireShop(auth, shopId)) return forbiddenResponse("Access denied to this shop");
     const branchId = searchParams.get("branchId");
     const customerId = searchParams.get("customerId");
     const orderType = searchParams.get("orderType");
@@ -29,6 +33,7 @@ export async function GET(req) {
         o.total,
         o.advance,
         o.balance,
+        o.actual_total as actualTotal,
         o.notes,
         o.branch_id as branchId,
         o.shop_id as shopId,
@@ -84,13 +89,19 @@ export async function GET(req) {
 
 // POST create new order
 export async function POST(req) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const body = await req.json();
     const {
       customer, customerId, orderType, date, deliveryDate,
-      subtotal, discount, tax, total, advance, paid, paymentMethod, notes, remarks, items, prescription, branchId, shopId,
+      subtotal, discount, tax, total, actualTotal, advance, paid, paymentMethod, notes, remarks, items, prescription, branchId,
       user
     } = body;
+
+    // SECURITY: Enforce tenant isolation — use JWT shopId, ignore body shopId
+    const shopId = body.shopId || auth.shopId;
+    if (!requireShop(auth, shopId)) return forbiddenResponse("Access denied to this shop");
 
     // Get customer name if customerId is provided
     const db = getDb();
@@ -116,8 +127,8 @@ export async function POST(req) {
 
     const result = db.prepare(`
       INSERT INTO orders (customer_id, customer_name, order_type, order_date, delivery_date, 
-                          subtotal, discount, tax, total, advance, balance, notes, status, branch_id, shop_id, local_id)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                          subtotal, discount, tax, total, actual_total, advance, balance, notes, status, branch_id, shop_id, local_id, user_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       customerId || null,
       customerName,
@@ -128,13 +139,15 @@ export async function POST(req) {
       parseFloat(discount) || 0,
       parseFloat(tax) || 0,
       parseFloat(total) || 0,
+      parseFloat(actualTotal) || parseFloat(total) || 0,
       paidAmount,
       balance,
       notes || remarks || null,
       'pending',
       branchId ? parseInt(branchId) : null,
       shopId ? parseInt(shopId) : null,
-      localId
+      localId,
+      user?.id || null
     );
 
     const orderId = result.lastInsertRowid;
@@ -224,15 +237,22 @@ export async function POST(req) {
 
     // Auto-create fabrication job if order contains both frame and lens items
     if (items && Array.isArray(items)) {
-      const hasFrame = items.some(i => (i.type || i.itemType) === 'frame');
-      const hasLens = items.some(i => ['lens', 'spectacle_lens', 'spectacle-lens'].includes((i.type || i.itemType)));
+      const getNormType = (i) => (i.type || i.itemType || 'accessory').toLowerCase().trim();
+      const frameTypes = ['frame', 'frame_only'];
+      const lensTypes = ['lens', 'spectacle_lens', 'spectacle-lens', 'spectacle_lenses', 'spectacle-lenses'];
+      
+      const hasFrame = items.some(i => frameTypes.includes(getNormType(i)));
+      const hasLens = items.some(i => lensTypes.includes(getNormType(i)));
+      
       if (hasFrame || hasLens) {
-        const frameItems = items.filter(i => (i.type || i.itemType) === 'frame');
-        const lensItems = items.filter(i => ['lens', 'spectacle_lens', 'spectacle-lens'].includes((i.type || i.itemType)));
+        const frameItems = items.filter(i => frameTypes.includes(getNormType(i)));
+        const lensItems = items.filter(i => lensTypes.includes(getNormType(i)));
+        
         const frameInfo = frameItems.length > 0 ? JSON.stringify(frameItems.map(f => ({ name: f.name || f.itemName, id: f.itemId, qty: f.quantity }))) : null;
         const lensInfo = lensItems.length > 0 ? JSON.stringify(lensItems.map(l => ({ name: l.name || l.itemName, id: l.itemId, qty: l.quantity }))) : null;
         const rxData = prescription ? JSON.stringify(prescription) : null;
         const isPriority = (notes || '').toLowerCase().includes('urgent') || (notes || '').toLowerCase().includes('rush') || (notes || '').toLowerCase().includes('same-day') ? 'rush' : 'normal';
+        
         db.prepare(`
           INSERT INTO fabrication_jobs (order_id, shop_id, branch_id, status, priority, patient_name, frame_info, lens_info, prescription_data, optician_notes)
           VALUES (?, ?, ?, 'queued', ?, ?, ?, ?, ?, ?)
@@ -252,6 +272,7 @@ export async function POST(req) {
         discount,
         tax,
         total,
+        actual_total as actualTotal,
         advance,
         balance,
         notes,

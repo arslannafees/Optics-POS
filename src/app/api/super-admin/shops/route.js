@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import getDb from "@/lib/db";
+import { verifyAuth, isAuthError, requireRole, forbiddenResponse } from "@/lib/auth";
 
-export async function GET() {
+export async function GET(req) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
+  if (!requireRole(auth, 'super-admin')) return forbiddenResponse("Super-admin access required");
   try {
     const db = getDb();
     const shops = db.prepare(`
@@ -23,6 +27,9 @@ export async function GET() {
 }
 
 export async function POST(req) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
+  if (!requireRole(auth, 'super-admin')) return forbiddenResponse("Super-admin access required");
   try {
     const { name } = await req.json();
 

@@ -205,7 +205,12 @@ function AppSidebarContent() {
     }
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (e) {
+      console.error("Logout error:", e);
+    }
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("selectedShopId");

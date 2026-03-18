@@ -12,13 +12,18 @@ const SettingsContext = createContext({
 
 export const useSettings = () => useContext(SettingsContext);
 
-const fetcher = (url) => fetch(url).then(res => res.json());
+const fetcher = async (url) => {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('API Error');
+    return res.json();
+};
 
 export function SettingsProvider({ children }) {
     const { currentShop } = useBranch();
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
     const { data: rawSettings, error, isLoading, mutate } = useSWR(
-        currentShop?.id ? `/api/settings?shopId=${currentShop.id}` : null,
+        token && currentShop?.id ? `/api/settings?shopId=${currentShop.id}` : null,
         fetcher,
         {
             revalidateOnFocus: false,
@@ -26,7 +31,7 @@ export function SettingsProvider({ children }) {
         }
     );
 
-    const { data: globalRawSettings } = useSWR('/api/super-admin/settings', fetcher, {
+    const { data: globalRawSettings } = useSWR('/api/public/settings', fetcher, {
         revalidateOnFocus: false,
         dedupingInterval: 60000,
     });
@@ -35,7 +40,8 @@ export function SettingsProvider({ children }) {
         const defaults = {
             businessName: currentShop?.name || "Optics",
             currency: "PKR", taxRate: "18", dateFormat: "DD/MM/YYYY",
-            discountType: "percentage", taxApplication: "pre-tax"
+            discountType: "percentage", taxApplication: "pre-tax",
+            roundOffTotal: "false"
         };
         return { ...defaults, ...rawSettings };
     }, [rawSettings, currentShop]);

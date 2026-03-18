@@ -15,7 +15,13 @@ export function useOrderDetails() {
         setIsLoading(true);
         try {
             const res = await fetch(`/api/orders/${id}`);
-            if (res.ok) setOrder(await res.json());
+            if (res.ok) {
+                const data = await res.json();
+                setOrder(data);
+                if (data.cashierName) {
+                    setCashierName(data.cashierName);
+                }
+            }
             else { toast.error("Failed to load order"); router.push("/order"); }
         } catch (e) { toast.error("Error loading order"); }
         finally { setIsLoading(false); }

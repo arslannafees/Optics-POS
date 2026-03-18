@@ -9,7 +9,7 @@ import { initIndexes } from './schema/indexes';
 import { initFabrication } from './schema/fabrication';
 import { seedData } from './schema/seed';
 
-const CURRENT_VERSION = 15;
+const CURRENT_VERSION = 17;
 
 export function initialize() {
     if (global._sqliteInitialized) return db;

@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import getDb from "@/lib/db";
+import { verifyAuth, isAuthError, requireRole, forbiddenResponse } from "@/lib/auth";
 
 export async function DELETE(req, { params }) {
+    const auth = verifyAuth(req);
+    if (isAuthError(auth)) return auth;
+    if (!requireRole(auth, 'super-admin')) return forbiddenResponse("Super-admin access required");
     try {
         const { id } = await params;
         const db = getDb();
@@ -23,6 +27,9 @@ export async function DELETE(req, { params }) {
 }
 
 export async function PUT(req, { params }) {
+    const auth = verifyAuth(req);
+    if (isAuthError(auth)) return auth;
+    if (!requireRole(auth, 'super-admin')) return forbiddenResponse("Super-admin access required");
     try {
         const { id } = await params;
         const { name, address, phone, active } = await req.json();

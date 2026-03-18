@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import getDb from "@/lib/db";
 import { logActivity } from "@/lib/log-activity";
+import { verifyAuth, isAuthError, requireShop, forbiddenResponse } from "@/lib/auth";
 
 // GET single customer
 export async function GET(req, { params }) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const { id } = await params;
     const db = getDb();
@@ -17,6 +20,7 @@ export async function GET(req, { params }) {
         mobile,
         email,
         address,
+        shop_id as shopId,
         created_at as createdAt,
         updated_at as updatedAt
       FROM customers 
@@ -27,6 +31,9 @@ export async function GET(req, { params }) {
       return NextResponse.json({ error: "Customer not found" }, { status: 404 });
     }
 
+    // SECURITY: Verify resource belongs to user's shop
+    if (!requireShop(auth, customer.shopId || customer.shop_id)) return forbiddenResponse("Access denied to this customer");
+
     return NextResponse.json(customer);
   } catch (error) {
     console.error("Error fetching customer:", error);
@@ -36,6 +43,8 @@ export async function GET(req, { params }) {
 
 // PUT update customer
 export async function PUT(req, { params }) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const { id } = await params;
     const body = await req.json();
@@ -50,10 +59,16 @@ export async function PUT(req, { params }) {
 
     const db = getDb();
 
-    // Get old data for logging
     const oldCustomer = db.prepare(`
       SELECT * FROM customers WHERE id = ?
     `).get(id);
+
+    if (!oldCustomer) {
+      return NextResponse.json({ error: "Customer not found" }, { status: 404 });
+    }
+
+    // SECURITY: Verify resource belongs to user's shop
+    if (!requireShop(auth, oldCustomer.shop_id)) return forbiddenResponse("Access denied to this customer");
 
     db.prepare(`
       UPDATE customers 
@@ -123,6 +138,8 @@ export async function PUT(req, { params }) {
 
 // DELETE customer
 export async function DELETE(req, { params }) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const { id } = await params;
 
@@ -146,6 +163,13 @@ export async function DELETE(req, { params }) {
     const db = getDb();
 
     const customer = db.prepare("SELECT * FROM customers WHERE id = ?").get(id);
+
+    if (!customer) {
+      return NextResponse.json({ error: "Customer not found" }, { status: 404 });
+    }
+
+    // SECURITY: Verify resource belongs to user's shop
+    if (!requireShop(auth, customer.shop_id)) return forbiddenResponse("Access denied to this customer");
 
     const result = db.prepare("DELETE FROM customers WHERE id = ?").run(id);
 

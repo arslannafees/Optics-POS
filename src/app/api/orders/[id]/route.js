@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import getDb from "@/lib/db";
 import { logActivity } from "@/lib/log-activity";
+import { verifyAuth, isAuthError, requireShop, forbiddenResponse } from "@/lib/auth";
 
 // GET single order with items
 export async function GET(req, { params }) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const { id } = await params;
     const db = getDb();
@@ -28,21 +31,27 @@ export async function GET(req, { params }) {
         o.total,
         o.advance,
         o.balance,
+        o.actual_total as actualTotal,
         o.notes,
         o.created_at as createdAt,
         o.updated_at as updatedAt,
         b.name as branchName,
         b.address as branchAddress,
-        b.phone as branchPhone
+        b.phone as branchPhone,
+        u.name as cashierName
       FROM orders o
       LEFT JOIN customers c ON o.customer_id = c.id
       LEFT JOIN branches b ON o.branch_id = b.id
+      LEFT JOIN users u ON o.user_id = u.id
       WHERE o.id = ?
     `).get(id);
 
     if (!order) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
+
+    // SECURITY: Verify resource belongs to user's shop
+    if (!requireShop(auth, order.shopId || order.shop_id)) return forbiddenResponse("Access denied to this order");
 
     // Get order items
     const items = db.prepare(`
@@ -85,12 +94,14 @@ export async function GET(req, { params }) {
 
 // PUT update order
 export async function PUT(req, { params }) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const { id } = await params;
     const body = await req.json();
     const {
       customerId, customer, orderType, date, deliveryDate, status,
-      subtotal, discount, tax, total, advance, paid, notes, remarks, items, prescription,
+      subtotal, discount, tax, total, actualTotal, advance, paid, notes, remarks, items, prescription,
       user
     } = body;
 
@@ -111,6 +122,9 @@ export async function PUT(req, { params }) {
     if (!existingOrder) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
+
+    // SECURITY: Verify resource belongs to user's shop
+    if (!requireShop(auth, existingOrder.shop_id)) return forbiddenResponse("Access denied to this order");
 
     // Get existing items for logging
     const existingItems = db.prepare(`
@@ -138,7 +152,7 @@ export async function PUT(req, { params }) {
         UPDATE orders 
         SET customer_id = ?, customer_name = ?, order_type = ?, order_date = ?, 
             delivery_date = ?, status = ?, subtotal = ?, discount = ?, tax = ?, 
-            total = ?, advance = ?, balance = ?, notes = ?, updated_at = CURRENT_TIMESTAMP
+            total = ?, actual_total = ?, advance = ?, balance = ?, notes = ?, updated_at = CURRENT_TIMESTAMP
         WHERE id = ?
       `).run(
         customerId || null,
@@ -151,6 +165,7 @@ export async function PUT(req, { params }) {
         parseFloat(discount) || 0,
         parseFloat(tax) || 0,
         parseFloat(total) || 0,
+        parseFloat(actualTotal) || parseFloat(total) || 0,
         paidAmount,
         balance,
         notes || remarks || null,
@@ -264,7 +279,7 @@ export async function PUT(req, { params }) {
       SELECT 
         id, customer_name as customer, order_type as orderType, order_date as date, 
         delivery_date as deliveryDate, status, subtotal, discount, tax, 
-        total, advance, balance, notes, created_at as createdAt, updated_at as updatedAt,
+        total, actual_total as actualTotal, advance, balance, notes, created_at as createdAt, updated_at as updatedAt,
         shop_id as shopId, branch_id as branchId
       FROM orders 
       WHERE id = ?
@@ -294,6 +309,7 @@ export async function PUT(req, { params }) {
             discount: existingOrder.discount,
             tax: existingOrder.tax,
             total: existingOrder.total,
+            actualTotal: existingOrder.actual_total,
             advance: existingOrder.advance,
             balance: existingOrder.balance,
             notes: existingOrder.notes,
@@ -310,6 +326,7 @@ export async function PUT(req, { params }) {
             discount: updated.discount,
             tax: updated.tax,
             total: updated.total,
+            actualTotal: updated.actualTotal,
             advance: updated.advance,
             balance: updated.balance,
             notes: updated.notes,
@@ -328,6 +345,8 @@ export async function PUT(req, { params }) {
 
 // DELETE order
 export async function DELETE(req, { params }) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const { id } = await params;
 
@@ -351,7 +370,8 @@ export async function DELETE(req, { params }) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    // 1. Get order items to restore stock and for logging
+    // SECURITY: Verify resource belongs to user's shop
+    if (!requireShop(auth, existingOrder.shop_id)) return forbiddenResponse("Access denied to this order");
     const items = db.prepare("SELECT item_type, item_id, item_name, quantity, price, total FROM order_items WHERE order_id = ?").all(id);
 
     // 2. Restore stock for each item
@@ -427,6 +447,8 @@ export async function DELETE(req, { params }) {
 
 // PATCH update order status
 export async function PATCH(req, { params }) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const { id } = await params;
     const body = await req.json();
@@ -450,6 +472,9 @@ export async function PATCH(req, { params }) {
     if (!existingOrder) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
+
+    // SECURITY: Verify resource belongs to user's shop
+    if (!requireShop(auth, existingOrder.shop_id)) return forbiddenResponse("Access denied to this order");
 
     const result = db.prepare(`
       UPDATE orders 

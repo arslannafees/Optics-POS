@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import getDb from "@/lib/db";
 import { logActivity } from "@/lib/log-activity";
+import { verifyAuth, isAuthError } from "@/lib/auth";
 
 // GET single purchase by ID with items
 export async function GET(req, { params }) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const { id } = await params;
     const db = getDb();
@@ -59,6 +62,8 @@ export async function GET(req, { params }) {
 
 // PUT update purchase (mainly for payments)
 export async function PUT(req, { params }) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const { id } = await params;
     const body = await req.json();
@@ -189,6 +194,8 @@ export async function PUT(req, { params }) {
 
 // DELETE purchase
 export async function DELETE(req, { params }) {
+  const auth = verifyAuth(req);
+  if (isAuthError(auth)) return auth;
   try {
     const { id } = await params;
 

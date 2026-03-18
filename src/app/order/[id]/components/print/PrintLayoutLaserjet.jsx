@@ -7,7 +7,7 @@ import { LaserjetItemsTable } from "./LaserjetItemsTable";
 
 import { LaserjetFooter } from "./LaserjetFooter";
 
-export function PrintLayoutLaserjet({ order, settings, isPreview = false }) {
+export function PrintLayoutLaserjet({ order, settings, cashierName, isPreview = false }) {
     if (!order) return null;
     const items = order.items || [];
 
@@ -38,7 +38,6 @@ export function PrintLayoutLaserjet({ order, settings, isPreview = false }) {
     };
 
     const chunks = calculateChunks(items);
-
     const totals = {
         qty: items.reduce((s, i) => s + (Number(i.quantity) || 0), 0),
         rate: items.reduce((s, i) => s + (Number(i.price) || 0), 0),
@@ -68,7 +67,7 @@ export function PrintLayoutLaserjet({ order, settings, isPreview = false }) {
                         {isFirstPage && (
                             <>
                                 <LaserjetHeader settings={settings} order={order} />
-                                <LaserjetInfoBar order={order} settings={settings} />
+                                <LaserjetInfoBar order={order} settings={settings} cashierName={cashierName} />
                             </>
                         )}
 
@@ -78,7 +77,6 @@ export function PrintLayoutLaserjet({ order, settings, isPreview = false }) {
 
                         {isLastPage && (
                             <>
-                                { /* Removed Clinical Prescription as per request */}
                                 <div className="mt-8">
                                     <LaserjetFooter order={order} settings={settings} />
                                 </div>

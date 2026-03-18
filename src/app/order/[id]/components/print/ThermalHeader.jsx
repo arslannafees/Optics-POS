@@ -2,7 +2,7 @@
 
 import React from "react";
 
-export function ThermalHeader({ order, settings }) {
+export function ThermalHeader({ order, settings, cashierName }) {
     if (!settings) return null;
 
     const formatDate = (date) => {
@@ -55,7 +55,7 @@ export function ThermalHeader({ order, settings }) {
                     {order.customerMobile && <span className="text-[10px] font-medium">{order.customerMobile}</span>}
                 </div>
                 <div className="flex justify-between items-center text-[10px] font-medium uppercase text-slate-600">
-                    <span>CASHIER: ADMIN</span>
+                    <span>CASHIER: {cashierName || "ADMIN"}</span>
                     <span>{formatDate(new Date())}, {formatTime(new Date())}</span>
                 </div>
             </div>

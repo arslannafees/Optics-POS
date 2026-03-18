@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 import getDb from "@/lib/db";
+import { verifyAuth, isAuthError, requireShop, requireRole, forbiddenResponse } from "@/lib/auth";
 
 // GET activity logs with filtering and pagination
 export async function GET(req) {
+    const auth = verifyAuth(req);
+    if (isAuthError(auth)) return auth;
     try {
         const { searchParams } = new URL(req.url);
-        const shopId = searchParams.get("shopId");
+        const shopId = searchParams.get("shopId") || auth.shopId;
+        if (!requireShop(auth, shopId)) return forbiddenResponse("Access denied to this shop");
         const branchId = searchParams.get("branchId");
         const entityType = searchParams.get("entityType");
         const action = searchParams.get("action");
@@ -158,9 +162,19 @@ export async function GET(req) {
 
 // DELETE - Clear all activity logs for a shop
 export async function DELETE(req) {
+    const auth = verifyAuth(req);
+    if (isAuthError(auth)) return auth;
     try {
+        // SECURITY: Only admin or super-admin can clear audit logs
+        if (!requireRole(auth, 'admin', 'super-admin')) {
+            return forbiddenResponse("Only administrators can clear activity logs");
+        }
+
         const { searchParams } = new URL(req.url);
-        const shopId = searchParams.get("shopId");
+        const shopId = searchParams.get("shopId") || auth.shopId;
+
+        // SECURITY: Enforce tenant isolation
+        if (!requireShop(auth, shopId)) return forbiddenResponse("Access denied to this shop");
 
         if (!shopId) {
             return NextResponse.json({ error: "Shop ID is required" }, { status: 400 });

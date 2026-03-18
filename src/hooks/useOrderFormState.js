@@ -16,7 +16,7 @@ export const initialOrderState = {
         pdType: "dual", totalPd: "", remarks: "",
     },
     subtotal: 0, discountPercentage: "", discount: 0, tax: 0,
-    total: 0, paid: "", paymentMethod: "", remarks: "",
+    total: 0, actualTotal: 0, paid: "", paymentMethod: "", remarks: "",
 };
 
 export function useOrderFormState() {

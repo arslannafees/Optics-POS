@@ -12,6 +12,8 @@ export function seedData(db) {
     const defaultShopId = db.prepare('SELECT id FROM shops LIMIT 1').get().id;
     seedAdmin(db, 'admin@optics.com', 'Admin', defaultShopId, 'admin');
     seedAdmin(db, 'superadmin@optics.com', 'Super Admin', null, 'super-admin');
+    seedAdmin(db, 'staff@optics.com', 'Staff', defaultShopId, 'staff');
+    seedAdmin(db, 'lensfabricator@optics.com', 'Lens Fabricator', defaultShopId, 'lens-fabricator');
     seedDefaultBranch(db, defaultShopId);
     return defaultShopId;
 }

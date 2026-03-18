@@ -27,9 +27,16 @@ export function ThermalFooter({ order, settings, cashier }) {
                     <span>{Number(tax).toLocaleString()}</span>
                 </div>
 
-                <div className="flex justify-between border-t-2 border-black py-2 bg-slate-100 px-2 rounded-sm">
+                <div className="flex justify-between border-t-2 border-black py-2 bg-slate-100 px-2 rounded-sm items-center">
                     <span className="text-lg font-black">TOTAL</span>
-                    <span className="text-lg font-black">{cur} {Number(order.total || 0).toLocaleString()}</span>
+                    <div className="flex flex-col items-end">
+                        <span className="text-lg font-black">{cur} {Number(order.total || 0).toLocaleString()}</span>
+                        {order.actualTotal && Number(order.actualTotal) !== Number(order.total) && (
+                            <span className="text-[9px] font-medium leading-none">
+                                (ACTUAL: {cur} {Number(order.actualTotal).toFixed(2)})
+                            </span>
+                        )}
+                    </div>
                 </div>
 
                 <div className="space-y-2">
